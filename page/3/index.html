@@ -1,0 +1,663 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="generator" content="Hexo 4.2.1"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>Hexo</title><meta property="og:type" content="blog"><meta property="og:title" content="Hexo"><meta property="og:url" content="http://yoursite.com/"><meta property="og:site_name" content="Hexo"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="http://yoursite.com/img/og_image.png"><meta property="article:author" content="John Doe"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com"},"headline":"Hexo","image":["http://yoursite.com/img/og_image.png"],"author":{"@type":"Person","name":"John Doe"},"description":""}</script><link rel="icon" href="/img/KaoLaTouXiang.jpeg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.0/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="Hexo" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">主页</a><a class="navbar-item" href="/archives">归档</a><a class="navbar-item" href="/categories">分类</a><a class="navbar-item" href="/tags">标签</a><a class="navbar-item" href="/about">关于</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/screw-driver/screw-driver.github.io"><i class="fab fa-github"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta size-small is-uppercase level is-mobile"><div class="level-left"><time class="level-item" dateTime="2020-03-04T01:14:06.000Z" title="2020-03-04T01:14:06.000Z">2020-03-04</time><span class="level-item">8 分钟 读完 (大约 1274 个字)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2020/03/04/20200304-%E6%A1%B6%E6%8E%92%E5%BA%8F/">20200304-桶排序</a></h1><div class="content"><h2 id="桶排序"><a href="#桶排序" class="headerlink" title="桶排序"></a>桶排序</h2><h3 id="思想"><a href="#思想" class="headerlink" title="思想"></a>思想</h3><p>一般排序算法的时间复杂度是<code>O(NlogN)</code>，说明当数据量N越大，则运行所需时间越长。</p>
+<p>那么考虑：能否将N个数据<strong>均匀</strong>地分成M个组，使每个组内的数据量约为N/M个；然后分别对每个组内的数据进行排序；最后合并每个组的数据，即完成对N个数据的排序。这就是桶排序的思想。</p>
+<h4 id="桶排序的步骤"><a href="#桶排序的步骤" class="headerlink" title="桶排序的步骤"></a>桶排序的步骤</h4><ol>
+<li>设置固定数量的空桶。</li>
+<li><strong>使用的映射函数</strong>把数据放到对应的桶中。</li>
+<li>对桶内数据进行排序。</li>
+<li>拼接桶内数据。</li>
+</ol>
+<h4 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h4><ol>
+<li>设置空桶数量为5个，由最大值110和最小值7确定每个桶的范围20.8=(110-7+1)/5 。</li>
+<li>遍历原始数据，根据映射函数，将数据放到对应的桶中。例如：数字7，桶索引值为0，计算公式为floor((7 – 7) / 20.8)；数字36，桶索引值为1，计算公式floor((36 – 7) / 20.8)。</li>
+<li>使用其它排序算法分别对各个桶内数据进行排序。</li>
+<li>顺序合并各个桶内数据。</li>
+</ol>
+
+
+<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Node</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">	<span class="keyword">int</span> val;</span><br><span class="line">	Node* next;</span><br><span class="line">	Node(<span class="keyword">int</span> num = <span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		val = num;</span><br><span class="line">		next = <span class="literal">nullptr</span>;</span><br><span class="line">	&#125;;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">bucketSort</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (nums.<span class="built_in">size</span>() &lt;= <span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	<span class="comment">// 1. 寻找数列中的最大和最小值，以确定桶的数量和每个桶所表示的数值范围,最后创建桶。</span></span><br><span class="line">	<span class="keyword">int</span> <span class="built_in">min</span> = nums[<span class="number">0</span>];</span><br><span class="line">	<span class="keyword">int</span> <span class="built_in">max</span> = nums[<span class="number">0</span>];</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">auto</span> i : nums)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">min</span> = (<span class="built_in">min</span> &gt; i) ? i : <span class="built_in">min</span>;</span><br><span class="line">		<span class="built_in">max</span> = (<span class="built_in">max</span> &lt; i) ? i : <span class="built_in">max</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">const</span> <span class="keyword">int</span> bucketNum = nums.<span class="built_in">size</span>() / <span class="number">4</span> + <span class="number">1</span>; <span class="comment">// 预计在每个桶内放100个数，以此来粗略估计所需桶的数量。</span></span><br><span class="line">	<span class="keyword">double</span> bucketRange = (<span class="keyword">static_cast</span>&lt;<span class="keyword">double</span>&gt;(<span class="built_in">max</span>) - <span class="built_in">min</span> + <span class="number">1</span>) / bucketNum; <span class="comment">// 计算每个桶的数值范围。</span></span><br><span class="line">	<span class="function"><span class="built_in">vector</span>&lt;Node&gt; <span class="title">bucket</span><span class="params">(bucketNum)</span></span>; <span class="comment">// 创建桶，里面存放的是Node类型的头节点。</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// 2. 使用映射函数，将数值放入相应桶中。</span></span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">auto</span> i : nums)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">int</span> bucketNumber = <span class="keyword">static_cast</span>&lt;<span class="keyword">int</span>&gt;((i - <span class="built_in">min</span>) / bucketRange); <span class="comment">// 明确数值i该放到第几号桶中。</span></span><br><span class="line">		Node* tmp = &amp;bucket[bucketNumber]; <span class="comment">// 找到桶的头节点。</span></span><br><span class="line">		<span class="keyword">while</span> (tmp-&gt;next != <span class="literal">nullptr</span>) <span class="comment">// 找到桶的尾节点。</span></span><br><span class="line">			tmp = tmp-&gt;next;</span><br><span class="line">		tmp-&gt;next = <span class="keyword">new</span> Node(i); <span class="comment">// 将新节点加入桶中。</span></span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// 3. 使用其它排序算法，逐个桶的对桶内数值进行排序。（这里使用插入排序）</span></span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">auto</span> &amp;i : bucket) <span class="comment">// 逐个桶的进行。</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span> (i.next == <span class="literal">nullptr</span> || i.next-&gt;next == <span class="literal">nullptr</span>) <span class="comment">// 若桶中没有数或者只有一个数，那就不用再排序了。</span></span><br><span class="line">			<span class="keyword">continue</span>;</span><br><span class="line">		Node* <span class="built_in">end</span> = i.next; <span class="comment">// 有序部分的最后一个节点。</span></span><br><span class="line">		<span class="keyword">for</span> (Node* p = <span class="built_in">end</span>-&gt;next; p != <span class="literal">nullptr</span>; ) <span class="comment">// p指向正在排序的那个节点。从第二个数值开始排，直至桶中的最后一个数。</span></span><br><span class="line">		&#123;</span><br><span class="line">			Node* q = <span class="literal">nullptr</span>;</span><br><span class="line">			Node* qPre = <span class="literal">nullptr</span>;</span><br><span class="line">			<span class="keyword">for</span> (q = i.next, qPre = &amp;i; q != p &amp;&amp; q-&gt;val &lt;= p-&gt;val; q = q-&gt;next, qPre = qPre-&gt;next); <span class="comment">// 找插入位置。因为是单链表，所以只能从前往后找,从第一个节点开始,直至找到正在排序的那个节点处。（注意头节点不是第一个节点，它起到一个辅助作用。）</span></span><br><span class="line">			<span class="keyword">if</span> (q != p) <span class="comment">// 则说明需要进行交换操作。</span></span><br><span class="line">			&#123;</span><br><span class="line">				<span class="built_in">end</span>-&gt;next = p-&gt;next; <span class="comment">// 指向无序部分的第一个节点。</span></span><br><span class="line">				<span class="comment">// 在q前面插入p。</span></span><br><span class="line">				p-&gt;next = q;</span><br><span class="line">				qPre-&gt;next = p;</span><br><span class="line"></span><br><span class="line">				p = <span class="built_in">end</span>-&gt;next; <span class="comment">// 明确下一个待排序的节点。</span></span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">else</span></span><br><span class="line">			&#123;</span><br><span class="line">				<span class="built_in">end</span> = <span class="built_in">end</span>-&gt;next;</span><br><span class="line">				p = <span class="built_in">end</span>-&gt;next; <span class="comment">// 明确下一个待排序的节点。</span></span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 4. 拼接各个桶内数据。</span></span><br><span class="line">	Node* head = bucket[<span class="number">0</span>].next;</span><br><span class="line">	Node* tmp = head;</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">decltype</span>(bucket.<span class="built_in">size</span>()) i = <span class="number">1</span>; i&lt;bucket.<span class="built_in">size</span>(); ++i) <span class="comment">// 逐个桶的进行。</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">while</span> (tmp-&gt;next != <span class="literal">nullptr</span>) <span class="comment">// 找到前一个桶的尾节点。</span></span><br><span class="line">			tmp = tmp-&gt;next;</span><br><span class="line">		tmp-&gt;next = bucket[i].next; <span class="comment">// 和当前桶的第一节点进行拼接。</span></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 5. 拷贝回容器。</span></span><br><span class="line">	tmp = head;</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">decltype</span>(nums.<span class="built_in">size</span>()) i = <span class="number">0</span>; i &lt; nums.<span class="built_in">size</span>(); ++i, tmp = tmp-&gt;next)</span><br><span class="line">		nums[i] = tmp-&gt;val;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 6. 回收空间。</span></span><br><span class="line">	Node *p = head;</span><br><span class="line">	<span class="keyword">while</span> (p != <span class="literal">nullptr</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		Node* q = p;</span><br><span class="line">		p = p-&gt;next;</span><br><span class="line">		<span class="keyword">delete</span> q;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="复杂度"><a href="#复杂度" class="headerlink" title="复杂度"></a>复杂度</h3><h5 id="时间复杂度"><a href="#时间复杂度" class="headerlink" title="时间复杂度"></a>时间复杂度</h5><p>时间复杂度分两部分考虑：</p>
+<ol>
+<li>循环使用的映射函数把N个数据放到对应的桶中，其时间复杂度为<code>O(N)</code>。</li>
+<li>使用其它排序算法对每个桶内的数据进行排序，其时间复杂度为 <code>∑ O(NilogNi) </code>，Ni 为第i个桶的数据量。</li>
+</ol>
+<p>当N个数据均分到M个桶中时，得到<strong>平均时间复杂度</strong>：<code>O(N)+O(M*(N/M)*log(N/M))</code>。<br>当N个数据几乎都分到1个桶中时，得到<strong>最坏时间复杂度</strong>：<code>O(N)+O(N*log(N))</code>。<br>当桶的数量M等于数据数量N时，得到<strong>最佳时间复杂度</strong>：<code>O(N)</code>。</p>
+<h5 id="空间复杂度"><a href="#空间复杂度" class="headerlink" title="空间复杂度"></a>空间复杂度</h5><p>桶排序中，需要创建M个桶的额外空间和N个数据的额外空间，所以桶排序的空间复杂度为 O(N+M)。</p>
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p><a href="https://blog.csdn.net/liaoshengshi/article/details/47320023">桶排序算法详解</a></p>
+<p><a href="https://dailc.github.io/2016/12/03/baseKnowlenge_algorithm_sort_bucketSort.html">排序算法之桶排序的深入理解以及性能分析</a></p>
+<p><a href="https://www.runoob.com/w3cnote/bucket-sort.html">菜鸟教程 桶排序</a></p>
+<p><a href="%5Bhttps://zh.wikipedia.org/wiki/%E6%A1%B6%E6%8E%92%E5%BA%8F%5D(https://zh.wikipedia.org/wiki/%E6%A1%B6%E6%8E%92%E5%BA%8F)">维基百科 桶排序 </a></p>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta size-small is-uppercase level is-mobile"><div class="level-left"><time class="level-item" dateTime="2020-03-03T05:47:09.000Z" title="2020-03-03T05:47:09.000Z">2020-03-03</time><span class="level-item">2 分钟 读完 (大约 342 个字)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2020/03/03/20200303-%E4%BB%8ESamacSys%E7%94%B3%E8%AF%B7%E5%85%83%E5%99%A8%E4%BB%B6%E7%9A%84%E5%8E%9F%E7%90%86%E5%9B%BE%E5%B0%81%E8%A3%85%E5%92%8CPCB%E5%B0%81%E8%A3%85/">20200303-从SamacSys申请元器件的原理图封装和PCB封装</a></h1><div class="content"><h2 id="从SamacSys申请元器件的原理图封装和PCB封装"><a href="#从SamacSys申请元器件的原理图封装和PCB封装" class="headerlink" title="从SamacSys申请元器件的原理图封装和PCB封装"></a>从SamacSys申请元器件的原理图封装和PCB封装</h2><ol>
+<li><p>进入其器件搜索网站：<a href="https://componentsearchengine.com/%E3%80%82">https://componentsearchengine.com/。</a></p>
+</li>
+<li><p>注册并登录。</p>
+</li>
+<li><p>下载并安装Altium Library Loader，注意对Altium只需要安装这个就行。</p>
+</li>
+<li><p>在网站搜索器件，若发现有器件则跳过申请步骤，反之，申请制作器件。</p>
+
+</li>
+<li><p>发现当前没有该器件的封装，点击申请。</p>
+
+</li>
+<li><p>填入器件制造商、器件名称、数据手册链接、引脚数即可，一般24小时或48小时内会制作完成然后邮箱通知。</p>
+
+</li>
+<li><p>当发现器件已有封装，则去Altium启动工具。</p>
+
+</li>
+<li><p>在工具中输入器件名，点击搜索。</p>
+
+</li>
+<li><p>点击ADD TO DESIGN将器件原理图和封装添加到其自身的Altium元件库。</p>
+</li>
+<li><p>最后将器件原理图和PCB封装复制到自己的元器件集成库即可；</p>
+</li>
+</ol>
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p><a href="https://blog.csdn.net/Kivensilence/article/details/92836652">基于Samacsys在EDA中实现快速建立原理图和PCB库</a></p>
+<p><a href="https://blog.csdn.net/z513dhg/article/details/80800171">硬件工程师工具推荐：samacsys</a></p>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta size-small is-uppercase level is-mobile"><div class="level-left"><time class="level-item" dateTime="2020-03-03T05:20:43.000Z" title="2020-03-03T05:20:43.000Z">2020-03-03</time><span class="level-item">4 分钟 读完 (大约 623 个字)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2020/03/03/20200303-PCB%E8%AE%BE%E8%AE%A1-%E7%BA%BF%E5%AE%BD%E3%80%81%E7%BA%BF%E8%B7%9D%E3%80%81%E7%88%AC%E7%94%B5%E8%B7%9D%E7%A6%BB/">20200303-PCB设计-线宽、线距、爬电距离</a></h1><div class="content"><h2 id="PCB设计-线宽、线距、爬电距离"><a href="#PCB设计-线宽、线距、爬电距离" class="headerlink" title="PCB设计-线宽、线距、爬电距离"></a>PCB设计-线宽、线距、爬电距离</h2><h3 id="距离"><a href="#距离" class="headerlink" title="距离"></a>距离</h3><ul>
+<li>BGA与相邻元件的距离&gt;5mm。</li>
+<li>贴片元件相互间的距离&gt;0.7mm。</li>
+<li>贴装元件焊盘的外侧与相邻插装元件的外侧距离大于2mm。</li>
+<li>有压接件的PCB，压接的接插件周围5mm内不能有插装元、器件，在焊接面其周围5mm内也不能有贴装元、器件。</li>
+<li>布线距离板边应不小于3mm，一是为了防止加工PCB或PCBA时损伤走线，二是为了防止静电。</li>
+</ul>
+<h3 id="线宽线距"><a href="#线宽线距" class="headerlink" title="线宽线距"></a>线宽线距</h3><h4 id="板密度与线宽线距"><a href="#板密度与线宽线距" class="headerlink" title="板密度与线宽线距"></a>板密度与线宽线距</h4><p>板的密度越高，倾向于使用更细的线宽和更窄的间隙。</p>
+<p>双层板线宽线距最小7mil，多层板可最小至4mil，BGA器件下方根据情况可最小到3.5mil，一般为10mil，尽量减少导线的不连续性，例如线宽不要突变，以免阻抗变化不可控。</p>
+<p>不论板的大小及层数，在条件允许的情况下，应保证线距不小于5mil，线与过孔间距不小于6mil来提高良品率。</p>
+<h4 id="信号的电流强度与线宽线距"><a href="#信号的电流强度与线宽线距" class="headerlink" title="信号的电流强度与线宽线距"></a>信号的电流强度与线宽线距</h4><p>当信号的平均电流较大时，应考虑布线宽度所能承载的的电流。</p>
+<p>**线宽可参考以下数据，建议设计降额50%**：</p>
+
+
+
+<p>在PCB设计加工中，常用OZ（盎司）作为铜皮厚度的单位，1 OZ铜厚的定义为 1 平方英尺面积内铜箔的重量为一盎，对应的物理厚度为35um；2OZ铜厚为70um。</p>
+<h4 id="电路工作电压与线宽线距"><a href="#电路工作电压与线宽线距" class="headerlink" title="电路工作电压与线宽线距"></a>电路工作电压与线宽线距</h4><p>线间距的设置应考虑其介电强度。</p>
+<p>输入150V-300V电源最小空气间隙及爬电距离：</p>
+
+
+<p>输入300V-600V电源最小空气间隙及爬电距离：</p>
+
+
+<h4 id="可靠性要求与线宽线距"><a href="#可靠性要求与线宽线距" class="headerlink" title="可靠性要求与线宽线距"></a>可靠性要求与线宽线距</h4><p>可靠性要求高时，倾向于使用较宽的布线和较大的间距。</p>
+<h4 id="PCB加工技术限制与线宽线距"><a href="#PCB加工技术限制与线宽线距" class="headerlink" title="PCB加工技术限制与线宽线距"></a>PCB加工技术限制与线宽线距</h4>
+
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p><a href="http://loonlog.com/2019/8/19/pcb-Line-width-spacing-creepage-distance/">PCB设计-线宽、线距、爬电距离</a></p>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta size-small is-uppercase level is-mobile"><div class="level-left"><time class="level-item" dateTime="2020-03-03T05:03:16.000Z" title="2020-03-03T05:03:16.000Z">2020-03-03</time><span class="level-item">2 分钟 读完 (大约 364 个字)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2020/03/03/20200303-%E4%BB%8E%E5%98%89%E7%AB%8B%E5%88%9B%E5%B9%B3%E5%8F%B0%E8%8E%B7%E5%BE%97%E5%85%83%E5%99%A8%E4%BB%B6%E7%9A%84%E5%8E%9F%E7%90%86%E5%9B%BE%E5%B0%81%E8%A3%85%E5%92%8CPCB%E5%B0%81%E8%A3%85/">20200303-从嘉立创平台获得元器件的原理图封装和PCB封装</a></h1><div class="content"><h2 id="从嘉立创平台获得元器件的原理图封装和PCB封装"><a href="#从嘉立创平台获得元器件的原理图封装和PCB封装" class="headerlink" title="从嘉立创平台获得元器件的原理图封装和PCB封装"></a>从嘉立创平台获得元器件的原理图封装和PCB封装</h2><ol>
+<li><p>账号登陆嘉立创网站<code>https://www.szlcsc.com/</code>，寻找需要的器件（或有相同封装的器件）。</p>
+</li>
+<li><p>下载器件的原理图文件和PCB文件。<br>找到器件后，点击器件栏中的<strong>数据手册</strong></p>
+
+
+<p>出现如下界面后，点击<strong>立即使用</strong></p>
+
+
+<p>接着出现如下界面：</p>
+
+
+<p>先保存，然后再选择导出到<code>Altium</code>。这样元器件的原理图就导出了,会自动下载一个原理图文件。</p>
+
+
+<p>点击魔法棒和螺丝刀中间的图标，选择：原理图转PCB。接着保存PCB文件，用同样的方法可以导出一个PCB文件。</p>
+</li>
+<li><p>提取器件原理图<br>现在本地已有该器件的原理图文件，用<code>Alitum</code>打开后，选择Design-&gt;Make Schematic Library。这样就生成一个<code>Altium</code>的原理图库文件。现在就可以拷贝这个器件的原理图到自己的器件库原理图文件中。</p>
+</li>
+<li><p>提取器件PCB<br>现在本地已有该器件的PCB文件，用<code>Alitum</code>打开后，选择Design-&gt;Make PCB Library.这样就生成一个<code>Altium</code>的PCB库文件。现在就可以拷贝这个器件的PCB到自己的器件库PCB文件中。</p>
+</li>
+</ol>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta size-small is-uppercase level is-mobile"><div class="level-left"><time class="level-item" dateTime="2020-03-03T00:50:22.000Z" title="2020-03-03T00:50:22.000Z">2020-03-03</time><span class="level-item">15 分钟 读完 (大约 2178 个字)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2020/03/03/20200303-%E8%AE%A1%E6%95%B0%E6%8E%92%E5%BA%8F/">20200303-计数排序</a></h1><div class="content"><h2 id="计数排序"><a href="#计数排序" class="headerlink" title="计数排序"></a>计数排序</h2><p>计数排序是Harold H. Seward于1954年提出的一种排序算法。</p>
+<h3 id="思想"><a href="#思想" class="headerlink" title="思想"></a>思想</h3><p>计数排序利用数组下标来确定元素位置。</p>
+<h4 id="如何使用数组下标来确定元素位置？"><a href="#如何使用数组下标来确定元素位置？" class="headerlink" title="如何使用数组下标来确定元素位置？"></a>如何使用数组下标来确定元素位置？</h4><p>给定由20个随机整数构成的无序数列，且随机整数范围在0到10，如下：<br>   <strong>9，3，5，4，9，1，2，7，8，1，3，6，5，3，4，0，10，9 ，7，9</strong></p>
+<ol>
+<li><p>根据整数的取值范围，建立一个长度为11的数组。数组下标从0到10，元素初始值全为0。</p>
+
+</li>
+<li><p>遍历这个无序数列，每一个整数按照其值对号入座，对应数组下标的元素进行加1操作。</p>
+<p>比如第一个整数是9，那么数组下标为9的元素加1：</p>
+
+
+<p>第二个整数是3，那么数组下标为3的元素加1：</p>
+
+
+<p>继续遍历数列并修改数组……<br>最终，数列遍历完毕时，数组的状态如下：</p>
+
+
+<p>数组每一个下标位置的值，代表了数列中对应整数出现的次数。</p>
+</li>
+<li><p>有了这个“统计结果”，排序就很简单了。直接遍历数组，输出数组元素的下标值，元素的值是几，就输出几次：<br><strong>0，1，1，2，3，3，3，4，4，5，5，6，7，7，8，9，9，9，9，10</strong><br>显然，这个输出的数列已经是有序的了。</p>
+</li>
+</ol>
+<h4 id="那如果是这样的数列-95，94，91，98，99，90，99，93，91，92-该怎么办，创建一个长度为100的数组，且只用了一点点，也太浪费了？另外如果出现负整数怎么办？"><a href="#那如果是这样的数列-95，94，91，98，99，90，99，93，91，92-该怎么办，创建一个长度为100的数组，且只用了一点点，也太浪费了？另外如果出现负整数怎么办？" class="headerlink" title="那如果是这样的数列{95，94，91，98，99，90，99，93，91，92}该怎么办，创建一个长度为100的数组，且只用了一点点，也太浪费了？另外如果出现负整数怎么办？"></a>那如果是这样的数列{95，94，91，98，99，90，99，93，91，92}该怎么办，创建一个长度为100的数组，且只用了一点点，也太浪费了？另外如果出现负整数怎么办？</h4><p>很简单，我们以（数列最大值和最小值的差+1）作为统计数组的长度。<br>同时，数列的最小值作为一个偏移量，用于统计数组的对号入座。</p>
+<p>以刚才的数列为例，统计数组的长度为  99-90+1 = 10 ，偏移量等于数列的最小值 90 。<br>对于第一个整数95，对应的统计数组下标是 95-90 = 5，如图所示：</p>
+
+
+<h4 id="随机数列只能是整数吗？实数可以吗？"><a href="#随机数列只能是整数吗？实数可以吗？" class="headerlink" title="随机数列只能是整数吗？实数可以吗？"></a>随机数列只能是整数吗？实数可以吗？</h4><p>只能是整数，实数不行。<br>如果数列中的元素都是小数，比如25.213，或是0.00000001这样子，则无法创建对应的统计数组。这样显然无法进行计数排序。</p>
+<h4 id="上面说的方法只能给整数排序，那如果要给学生的考试成绩排序，遇到相同的分数就会分不清谁是谁，怎么办？"><a href="#上面说的方法只能给整数排序，那如果要给学生的考试成绩排序，遇到相同的分数就会分不清谁是谁，怎么办？" class="headerlink" title="上面说的方法只能给整数排序，那如果要给学生的考试成绩排序，遇到相同的分数就会分不清谁是谁，怎么办？"></a>上面说的方法只能给整数排序，那如果要给学生的考试成绩排序，遇到相同的分数就会分不清谁是谁，怎么办？</h4><p>给定一个学生的成绩表，要求按成绩从低到高排序，如果成绩相同，则遵循原表固有顺序。</p>
+
+
+<p>那么，当我们填充统计数组以后，我们只知道有两个成绩并列95分的小伙伴，却不知道哪一个是小红，哪一个是小绿：</p>
+
+
+<p>我们需要把之前的统计数组变形成下面的样子：</p>
+
+
+<p>这是如何变形的呢？统计数组从第二个元素开始，每一个元素都加上前面所有元素之和。<br>这样相加的目的，是让<strong>统计数组存储的元素值，等于相应整数的最终排序位置</strong>。比如下标是9的元素值为5，代表原始数列的整数9，最终的排序是在第5位。</p>
+<p><strong>从后向前遍历</strong>输入数列：<br>第一步，我们遍历成绩表最后一行的小绿：<br>小绿是95分，我们找到countArray下标是5的元素，值是4，代表小绿的成绩排名位置在第4位。<br>同时，我们给countArray下标是5的元素值减1，从4变成3,，代表着下次再遇到95分的成绩时，最终排名是第3。</p>
+
+
+<p>第二步，我们遍历成绩表倒数第二行的小白：<br>小白是94分，我们找到countArray下标是4的元素，值是2，代表小白的成绩排名位置在第2位。<br>同时，我们给countArray下标是4的元素值减1，从2变成1,，代表着下次再遇到94分的成绩时（实际上已经遇不到了），最终排名是第1。</p>
+
+
+<p>第三步，我们遍历成绩表倒数第三行的小红：<br>小红是95分，我们找到countArray下标是5的元素，值是3（最初是4，减1变成了3），代表小红的成绩排名位置在第3位。<br>同时，我们给countArray下标是5的元素值减1，从3变成2,，代表着下次再遇到95分的成绩时（实际上已经遇不到了），最终排名是第2。</p>
+
+
+<p>这样一来，同样是95分的小红和小绿就能够清楚地排出顺序了，也正因此，优化版本的计数排序属于稳定排序。<br>后面的遍历过程以此类推，这里就不再详细描述了。</p>
+<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">countSort</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (nums.<span class="built_in">size</span>() &lt;= <span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// 1. 寻找原始数列中的最大和最小值-》计算范围-》定义统计数组。</span></span><br><span class="line">	<span class="keyword">auto</span> <span class="built_in">min</span> = nums[<span class="number">0</span>];</span><br><span class="line">	<span class="keyword">auto</span> <span class="built_in">max</span> = nums[<span class="number">0</span>];</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">auto</span> i : nums)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">min</span> = (<span class="built_in">min</span> &gt; i) ? i : <span class="built_in">min</span>;</span><br><span class="line">		<span class="built_in">max</span> = (<span class="built_in">max</span> &lt; i) ? i : <span class="built_in">max</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">int</span> len = <span class="built_in">max</span> - <span class="built_in">min</span> + <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">int</span>* countArr = <span class="keyword">new</span> <span class="keyword">int</span>[len](); <span class="comment">// 动态创建数组，并将里面的值初始化为0。</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// 2. 从原始数列头部开始遍历，来填充统计数组。</span></span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">auto</span> i : nums)</span><br><span class="line">		countArr[i - <span class="built_in">min</span>]++;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 3. 变形统计数组，使其内容的意义从（某个数出现的次数）变为（该数在排好序后是第几个，若该数重复，则意义变为最后那个是第几个）。</span></span><br><span class="line">	<span class="comment">// 注意这里的排序是从1开始的，而后续数组中是从0开始的。</span></span><br><span class="line">	<span class="keyword">int</span> sum = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; len; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		sum += countArr[i];</span><br><span class="line">		countArr[i] = sum;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 4. 为了保证稳定，从原始数列尾部开始遍历，输出。</span></span><br><span class="line">	<span class="function"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; <span class="title">tmp</span><span class="params">(nums)</span></span>; <span class="comment">// tmp是nums的一个临时拷贝，因为后续操作会破坏掉nums。</span></span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = tmp.<span class="built_in">size</span>() - <span class="number">1</span>; i &gt;= <span class="number">0</span>; --i)</span><br><span class="line">		nums[((countArr[tmp[i]-<span class="built_in">min</span>]--)<span class="number">-1</span>)] = tmp[i]; <span class="comment">// i表示当前在tmp数组的哪里；tmp[i]-min表示countArr中与数值tmp[i]对应的下标；((countArr[tmp[i]-min]--)-1)表示对应数的排名，其减一是因为数组是从0开始的。</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">delete</span> []countArr; <span class="comment">// 释放统计数组占用空间。</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="复杂度"><a href="#复杂度" class="headerlink" title="复杂度"></a>复杂度</h3><p>如果原始数列的规模是N，最大最小整数的差值是M。</p>
+<h4 id="时间复杂度"><a href="#时间复杂度" class="headerlink" title="时间复杂度"></a>时间复杂度</h4><p>代码第1，2，4步都是遍历原始数列，运算量都为N；第3步遍历统计数列，运算量为M。<br>所以总体运算量为3N+M，时间复杂度为<code>O(N+M)</code>。</p>
+<h4 id="空间复杂度"><a href="#空间复杂度" class="headerlink" title="空间复杂度"></a>空间复杂度</h4><p>统计数组占用了额外空间，所以空间复杂度为<code>O(M)</code>。</p>
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p><a href="https://www.cxyxiaowu.com/5437.html">漫画：什么是计数排序？</a></p>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta size-small is-uppercase level is-mobile"><div class="level-left"><time class="level-item" dateTime="2020-03-02T00:37:36.000Z" title="2020-03-02T00:37:36.000Z">2020-03-02</time><span class="level-item">14 分钟 读完 (大约 2150 个字)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2020/03/02/20200302-%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F/">20200302-快速排序</a></h1><div class="content"><h2 id="快速排序"><a href="#快速排序" class="headerlink" title="快速排序"></a>快速排序</h2><p>快速排序是东尼霍尔(C. A. R. Hoare）于1960年提出的一种排序算法。</p>
+<h3 id="思想"><a href="#思想" class="headerlink" title="思想"></a>思想</h3><p>快速排序采用分治思想。<br>快速排序的方法是：逐个的将基准数归位，如下图。</p>
+
+
+<h4 id="如何设立基准数？"><a href="#如何设立基准数？" class="headerlink" title="如何设立基准数？"></a>如何设立基准数？</h4><p><strong>基准数</strong>就是一个用来<strong>参照</strong>的数。每轮快排后，序列中所有比基准数大的数都应该放在基准数的右边，比基准数小的数都应该放在基准数的左边。</p>
+<p>知道基准数的作用，那么就知道基准数的选择是随意的，只要每轮快排都把基准数放到正确位置即可。为了方便，就让序列中的第一个数作为基准数吧。</p>
+<h4 id="如何将基准数归位？"><a href="#如何将基准数归位？" class="headerlink" title="如何将基准数归位？"></a>如何将基准数归位？</h4><p>序列“6 1 2 7 9 3 4 5 10 8”，设基准数为6。<br>下面描述如何将基准数6归位。</p>
+<ol>
+<li><p>分别从初始序列“6 1 2 7 9 3 4 5 10 8”两端开始“探测”。先从右往左找一个小于 6 的数，再从左往右找一个大于 6 的数，然后交换他们。这里可以用两个变量 i 和 j，分别指向序列最左边和最右边。我们为这两个变量起个好听的名字“哨兵 i”和“哨兵 j”。刚开始的时候让哨兵 i 指向序列的最左边（即 i=0），指向数字 6。让哨兵 j 指向序列的最右边（即 j=9），指向数字 8。</p>
+
+</li>
+<li><p>首先哨兵 j 开始出动。<strong>因为此处设置的基准数是最左边的数，所以需要让哨兵 j 先出动。</strong>哨兵 j 一步一步地向左挪动（即 j–），直到找到一个小于 6 的数停下来。接下来哨兵 i 再一步一步向右挪动（即 i++），直到找到一个数大于 6 的数停下来。最后哨兵 j 停在了数字 5 面前，哨兵 i 停在了数字 7 面前。</p>
+
+
+<p>现在交换哨兵 i 和哨兵 j 所指向的元素的值。交换之后的序列：6 1 2 5 9 3 4 7 10 8。</p>
+
+
+<p>到此，第一次交换结束。</p>
+</li>
+<li><p>接下来开始哨兵 j 继续向左挪动（<strong>再友情提醒，每次必须是哨兵 j 先出发</strong>）。他发现了 4（比基准数 6 要小，满足要求）之后停了下来。哨兵 i 也继续向右挪动的，他发现了 9（比基准数 6 要大，满足要求）之后停了下来。</p>
+
+
+<p>此时再次进行交换，交换之后的序列：6 1 2 5 4 3 9 7 10 8。</p>
+
+
+<p>第二次交换结束。</p>
+</li>
+<li><p>哨兵 j 继续向左挪动，他发现了 3（比基准数 6 要小，满足要求）之后又停了下来。哨兵 i 继续向右移动，糟啦！此时哨兵 i 和哨兵 j 相遇了，哨兵 i 和哨兵 j 都走到 3 面前。说明此时“探测”结束。</p>
+
+
+<p>我们将基准数 6 和 3 进行交换。交换之后的序列：3 1 2 5 4 6 9 7 10 8。</p>
+
+
+
+
+<p>到此第一轮“探测”真正结束。</p>
+</li>
+</ol>
+<h5 id="为什么当设置的基准数是最左边的数时，需要让哨兵-j-先出动？"><a href="#为什么当设置的基准数是最左边的数时，需要让哨兵-j-先出动？" class="headerlink" title="为什么当设置的基准数是最左边的数时，需要让哨兵 j 先出动？"></a>为什么当设置的基准数是最左边的数时，需要让哨兵 j 先出动？</h5><p>因为每轮的最后一步，我们要将基准数归位，即将基准数插入到序列中的某个位置。<br>这也就是说需要有一个数来和基准数做交换。并且交换后依然要满足：基准数左边的数要小于基准数，基准数右边的数要大于基准数。那么自然的，我们希望那个数是比基准数小的。</p>
+<p>现在，我们再来明确两个哨兵的职责：<br>哨兵j：寻找一个比基准数小的数。<br>哨兵i：寻找一个比基准数大的数。</p>
+<p>最后，来考虑下两个哨兵相遇的情景：<br>第一种情况：假设哨兵i先行，哨兵j后行。</p>
+<blockquote>
+<p>那么最后时，哨兵i找到一个比基准数大的数。然后哨兵j前进，途中没有发现比基准数小的数，最终哨兵j遇到哨兵i，该轮结束。这时候，两哨兵下的数是个比基准数大的数，因此如果将该数和基准数做交换，就不满足：准数左边的数要小于基准数，基准数右边的数要大于基准数。</p>
+</blockquote>
+<p>第二种情况：假设哨兵j先行，哨兵i后行。</p>
+<blockquote>
+<p>那么最后时，哨兵j找到一个比基准数小的数。然后哨兵i前进，途中没有发现比基准数大的数，最终哨兵i遇到哨兵j，该轮结束。这时候，两哨兵下的数是个比基准数小的数，因此如果将该数和基准数做交换，就满足：准数左边的数要小于基准数，基准数右边的数要大于基准数。</p>
+</blockquote>
+<h4 id="如何分治？"><a href="#如何分治？" class="headerlink" title="如何分治？"></a>如何分治？</h4><p>当我们第一次把基准数归位后，那么这个序列可以以<strong>归位后的基准数</strong>作为分界点分成两个序列，再分别对两个序列进行基准数归位。如此重复。</p>
+<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 递归方式做。</span></span><br><span class="line"><span class="comment">// start: 数组的起始下标。</span></span><br><span class="line"><span class="comment">// end: 数组的终止下标。</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">quickSort</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums, <span class="keyword">int</span> start, <span class="keyword">int</span> <span class="built_in">end</span>)</span> </span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (start &gt;= <span class="built_in">end</span>) <span class="comment">// 当只有一个值时，当然不需要再排序。</span></span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">int</span> i = start; <span class="comment">// 哨兵i。</span></span><br><span class="line">	<span class="keyword">int</span> j = <span class="built_in">end</span>; <span class="comment">// 哨兵j。</span></span><br><span class="line">	<span class="keyword">int</span> base = start; <span class="comment">// 以序列的第一位数作为基准数。 </span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">while</span> (i &lt; j) <span class="comment">// 若两哨兵相遇，则结束。</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">for</span> ( ; i &lt; j &amp;&amp; nums[j] &gt;= nums[base]; --j); <span class="comment">// 哨兵j向左前进寻找小于基准数的数。</span></span><br><span class="line">		<span class="keyword">for</span> ( ; i &lt; j &amp;&amp; nums[i] &lt;= nums[base]; ++i); <span class="comment">// 哨兵i向右前进寻找大于基准数的数。</span></span><br><span class="line">		swap(nums, i, j); <span class="comment">// 两个哨兵分别找到各自的值,交换。或者两个哨兵相遇，则某个数值会和自己交换。</span></span><br><span class="line">	&#125;</span><br><span class="line">	swap(nums, i, base); <span class="comment">// 基准数归位。</span></span><br><span class="line"></span><br><span class="line">	quickSort(nums, start, i - <span class="number">1</span>); <span class="comment">// 对归位后基准数的左边序列进行快速排序。</span></span><br><span class="line">	quickSort(nums, i + <span class="number">1</span>, <span class="built_in">end</span>); <span class="comment">// 对归位后基准数的右边序列进行快速排序。</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">swap</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums, <span class="keyword">int</span> i, <span class="keyword">int</span> j)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> tmp = nums[i];</span><br><span class="line">	nums[i] = nums[j];</span><br><span class="line">	nums[j] = tmp;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="复杂度"><a href="#复杂度" class="headerlink" title="复杂度"></a>复杂度</h3><h4 id="时间复杂度"><a href="#时间复杂度" class="headerlink" title="时间复杂度"></a>时间复杂度</h4><p>快速排序是在冒泡排序的基础上改进而来的，冒泡排序每次只能交换相邻的两个元素，而快速排序是<strong>跳跃式</strong>的交换，交换的距离很大，因此总的比较和交换次数少了很多，速度也快了不少。</p>
+<p>但是快速排序在最坏情况下的时间复杂度和冒泡排序一样，是<code> O(n2)</code>，实际上每次比较都需要交换，但是这种情况并不常见。我们可以思考一下如果每次比较都需要交换，那么数列的平均时间复杂度是 <code>O(nlogn)</code>，事实上在大多数时候，排序的速度要快于这个平均时间复杂度。</p>
+<h4 id="空间复杂度"><a href="#空间复杂度" class="headerlink" title="空间复杂度"></a>空间复杂度</h4><p>快速排序只是使用数组原本的空间进行排序，所以所占用的空间应该是常量级的，但是由于每次划分之后是递归调用，所以递归调用在运行的过程中会消耗一定的空间，在一般情况下的空间复杂度为 <code>O(logn)</code>，在最差的情况下，若每次只完成了一个元素，那么空间复杂度为 <code>O(n)</code>。所以我们一般认为快速排序的空间复杂度为 <code>O(logn)</code>。</p>
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p><a href="https://wiki.jikexueyuan.com/project/easy-learn-algorithm/fast-sort.html">算法 3：最常用的排序——快速排序</a></p>
+<p><a href="http://data.biancheng.net/view/117.html">快速排序算法详解（原理、实现和时间复杂度）</a></p>
+<p><a href="https://zh.wikipedia.org/wiki/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F">维基百科 快速排序</a></p>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta size-small is-uppercase level is-mobile"><div class="level-left"><time class="level-item" dateTime="2020-02-29T08:15:17.000Z" title="2020-02-29T08:15:17.000Z">2020-02-29</time><span class="level-item">15 分钟 读完 (大约 2269 个字)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2020/02/29/20200229-%E5%A0%86%E6%8E%92%E5%BA%8F/">20200229-堆排序</a></h1><div class="content"><h2 id="堆排序"><a href="#堆排序" class="headerlink" title="堆排序"></a>堆排序</h2><p>堆排序是罗伯特.弗洛伊德(Robert W．Floyd）和威廉姆斯(J．Williams）于1964年提出的一种排序算法。</p>
+<h3 id="思想"><a href="#思想" class="headerlink" title="思想"></a>思想</h3><p>根据堆的特性：大顶堆的堆顶值为堆中的最大值，小顶堆的堆顶值为堆中的最小值。</p>
+<ol>
+<li>那么将待排序数组构造成大顶堆（小顶堆），则其堆顶值就是堆中的最大值（最小值）。</li>
+<li>取出堆顶值，再调整剩余的数值成大顶堆（小顶堆），并获得其堆顶值。</li>
+<li>如此重复，即可逐个获得当前堆中的最大值（最小值），直至堆空为止。</li>
+</ol>
+<h4 id="那么什么是大顶堆？什么是小顶堆？"><a href="#那么什么是大顶堆？什么是小顶堆？" class="headerlink" title="那么什么是大顶堆？什么是小顶堆？"></a>那么什么是大顶堆？什么是小顶堆？</h4><h5 id="首先得明白什么是堆？"><a href="#首先得明白什么是堆？" class="headerlink" title="首先得明白什么是堆？"></a>首先得明白什么是堆？</h5><p>堆是一颗完全二叉树；而完全二叉树是指除了最后一层外，其它层都达到最大节点数，且最后一层节点都靠左排列的树，如下。</p>
+
+
+<p><strong>大顶堆</strong>是指堆内任意节点的值都要小于等于其双亲节点的值。<br><strong>小顶堆</strong>是指堆内任意节点的值都要大于等于其双亲节点的值。</p>
+
+
+<h4 id="堆的插入元素操作和删除堆顶元素操作是怎样的？"><a href="#堆的插入元素操作和删除堆顶元素操作是怎样的？" class="headerlink" title="堆的插入元素操作和删除堆顶元素操作是怎样的？"></a>堆的插入元素操作和删除堆顶元素操作是怎样的？</h4><h5 id="插入元素操作"><a href="#插入元素操作" class="headerlink" title="插入元素操作"></a>插入元素操作</h5><p>往堆中插入一个元素后，我们需要继续满足堆的两个特性，即：</p>
+<ol>
+<li>堆是一颗完全二叉树；</li>
+<li>堆内任意节点的值都要小于等于（或者大于等于）其双亲节点的值。</li>
+</ol>
+<p>为了满足条件1，把元素插入到最后一层最后一个节点往后一位的位置，但是插入后可能不再满足条件2，所以这时候需要堆化。</p>
+
+
+<p>在完全二叉树中，插入的节点与它的父节点相比，如果比父节点小，就交换它们的位置，再往上和父节点相比，如果比父节点小，再交换位置，直到比父节点大为止。</p>
+<p>在数组中，插入的节点与n/2位置的节点相比，如果比n/2位置的节点小，就交换它们的位置，再往前与n/4位置的节点相比，如果比n/4位置的节点小，再交换位置，直到比n/(2^x)位置的节点大为止。</p>
+<p>这就是插入元素时进行的堆化，也叫<strong>自下而上的堆化</strong>。</p>
+<h5 id="删除堆顶元素操作"><a href="#删除堆顶元素操作" class="headerlink" title="删除堆顶元素操作"></a>删除堆顶元素操作</h5><p>我们知道，在小顶堆中堆顶存储的是最小的元素，这时候我们把它删除会怎样呢？<br>删除了堆顶元素后，要使得还满足堆的两个特性，首先，我们可以把最后一个元素移到根节点的位置，这时候就满足条件1，之后就是使它满足条件2，就需要堆化了。</p>
+
+
+<p>将完全二叉树和数组对照着来看。<br>在完全二叉树中，把最后一个节点放到堆顶，然后与左右子节点中小的交换位置（因为是小顶堆），依次往下，直到其比左右子节点都小为止。<br>在数组中，把最后一个元素移到下标为1的位置，然后与下标为2和3的位置对比，发现8比2大，且2是2和3中间最小的，所以与2交换位置；然后再下标为4和5的位置对比，发现8比5大，且5是5和7中最小的，所以与5交换位置，没有左右子节点了，堆化结束。<br>这就是删除元素时进行的堆化，也叫<strong>自上而下的堆化</strong>。</p>
+<h5 id="如何构造堆？"><a href="#如何构造堆？" class="headerlink" title="如何构造堆？"></a>如何构造堆？</h5><p>既然已经知道插入元素操作，那么构造堆时，只要把元素一个一个的插入堆中即可。</p>
+<h5 id="那么如何从堆中拿取堆顶元素？"><a href="#那么如何从堆中拿取堆顶元素？" class="headerlink" title="那么如何从堆中拿取堆顶元素？"></a>那么如何从堆中拿取堆顶元素？</h5><p>其实就是上述讲的删除堆顶元素操作。</p>
+<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">heapSort</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="comment">// 根据堆的插入操作来构造大顶堆。</span></span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">decltype</span>(nums.<span class="built_in">size</span>()) i = <span class="number">1</span>; i &lt; nums.<span class="built_in">size</span>(); ++i) <span class="comment">// i表示堆末节点下标（实际上是数组下标）。若下标从0开始计算，则节点i的父节点为（i-1）/2。</span></span><br><span class="line">	&#123;		</span><br><span class="line">		<span class="keyword">int</span> child = i; <span class="comment">// 将新插入的节点（即堆末节点）作为孩子节点。</span></span><br><span class="line">		<span class="keyword">int</span> parent = (child - <span class="number">1</span>) / <span class="number">2</span>; <span class="comment">// 计算其双亲节点。</span></span><br><span class="line">		<span class="keyword">while</span> (child &gt; <span class="number">0</span> &amp;&amp; nums[parent] &lt; nums[child]) <span class="comment">// 当孩子节点和双亲节点均在堆内，且双亲节点的数值小于孩子节点的数值时。</span></span><br><span class="line">		&#123;			</span><br><span class="line">			swap(nums, parent, child); <span class="comment">// 交换双亲节点和孩子节点的数值。</span></span><br><span class="line"></span><br><span class="line">			child = parent; <span class="comment">// 定位到孩子的双亲节点，即将当前孩子的双亲节点作为新孩子节点。以便在下次while循环中检查其和其双亲节点是否符合大顶堆规则。</span></span><br><span class="line">			parent = (child - <span class="number">1</span>) / <span class="number">2</span>; <span class="comment">// 计算双亲节点。</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">    </span><br><span class="line">	<span class="comment">// 根据堆的删除操作来获得有序数列，并调整大顶堆。</span></span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = nums.<span class="built_in">size</span>()<span class="number">-1</span>; i &gt; <span class="number">0</span>; --i) <span class="comment">// i表示堆末节点下标（实际上是数组下标）。逐个的把大顶堆堆顶数放到未排序序列末。</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="comment">// 因为新交换到堆顶的值，不一定满足大顶堆规则，所以要逐层检查。若双亲节点为i，则左孩子为2*i+1,右孩子为2*i+2。</span></span><br><span class="line">		<span class="keyword">int</span> parent = <span class="number">0</span>; <span class="comment">// 将根节点作为当前处理的节点。</span></span><br><span class="line">		<span class="keyword">int</span> leftChild = <span class="number">2</span> * parent + <span class="number">1</span>; <span class="comment">// 计算其左孩子节点下标。</span></span><br><span class="line">		<span class="keyword">int</span> rightChild = <span class="number">2</span> * parent + <span class="number">2</span>; <span class="comment">// 计算其右孩子节点下标。</span></span><br><span class="line">		<span class="keyword">int</span> largerChild = <span class="number">0</span>; <span class="comment">// 含有较大数值的孩子节点的下标。</span></span><br><span class="line">		<span class="keyword">while</span> (leftChild &lt;= i) <span class="comment">// 得保证当前处理的节点必然有一个孩子节点。</span></span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">if</span> (rightChild &lt;= i) <span class="comment">// 若右孩子也存在。</span></span><br><span class="line">				largerChild = (nums[leftChild] &gt; nums[rightChild]) ? leftChild : rightChild; <span class="comment">// 比较左右孩子谁的数值更大。</span></span><br><span class="line">			<span class="keyword">else</span> <span class="comment">// 仅有左孩子。</span></span><br><span class="line">				largerChild = leftChild;</span><br><span class="line"></span><br><span class="line">			<span class="keyword">if</span> (nums[largerChild] &gt; nums[parent]) <span class="comment">// 若数值大的孩子，其值也比双亲的数值大，则需要进行交换。</span></span><br><span class="line">			&#123;</span><br><span class="line">				swap(nums, largerChild, parent); <span class="comment">// 交换双亲节点和大孩子节点的数值。</span></span><br><span class="line"></span><br><span class="line">				parent = largerChild; <span class="comment">// 定位到数值较大的孩子节点。以便在下次while循环中检查其和其双亲节点是否符合大顶堆规则。</span></span><br><span class="line">				leftChild = <span class="number">2</span> * parent + <span class="number">1</span>; <span class="comment">// 计算其左孩子节点下标。</span></span><br><span class="line">				rightChild = <span class="number">2</span> * parent + <span class="number">2</span>; <span class="comment">// 计算其右孩子节点下标。</span></span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">else</span> <span class="comment">// 若检查到某个节点，发现正常，根据大顶堆的规则则后续节点就不用检查。</span></span><br><span class="line">				<span class="keyword">break</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		swap(nums, <span class="number">0</span>, i); <span class="comment">// 交换堆顶和堆末的数值。</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">swap</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums, <span class="keyword">int</span> p, <span class="keyword">int</span> q)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> tmp = nums[p];</span><br><span class="line">	nums[p] = nums[q];</span><br><span class="line">	nums[q] = tmp;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="复杂度"><a href="#复杂度" class="headerlink" title="复杂度"></a>复杂度</h3><h4 id="时间复杂度"><a href="#时间复杂度" class="headerlink" title="时间复杂度"></a>时间复杂度</h4><p>分<strong>构造堆</strong>和<strong>调整堆</strong>两部分考虑。</p>
+<p><strong>构造堆的时间复杂度</strong></p>
+
+
+<p>其实，建堆的整个过程中一个节点的比较次数是与它的高度k成正比的，比如，上图中的1这个元素，它也是从最后一层依次比较了3次（高度h=4），才到达了现在的位置。</p>
+<p>所以，我们可以得出第h层的元素有1个，它最多需要比较(h-1)次；第(h-1)层有2个元素，它们最多比较(h-2)次；第(h-2)层有2^2个元素，它们最多比较(h-3)次；…；第1层有2^(h-1)个元素，它们最多比较0次。</p>
+<p>因而，总和就如下图：</p>
+
+
+<p><strong>调整堆的时间复杂度</strong></p>
+<p>从删除元素的过程，我们知道把最后一个元素拿到根节点后，每次与2n和(2n+1)位置的元素比较，取其小者，所以，删除元素的时间复杂度也为O(log n)。<br>那么删除n个元素正好是：</p>
+<p>log n + log(n-1) + log(n-2) + log 1</p>
+<p>这个公式约等于nlog n，所以堆排序的时间复杂度为O(nlog n)。</p>
+<h4 id="空间复杂度"><a href="#空间复杂度" class="headerlink" title="空间复杂度"></a>空间复杂度</h4><p>堆排序不需要占用额外的空间，只需要交换元素的需要一个临时变量，所以堆排序的空间复杂度为O(1)。</p>
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p><a href="https://zhuanlan.zhihu.com/p/63089552">拜托，面试别再问我堆（排序）了！</a></p>
+<p><a href="https://www.cnblogs.com/chengxiao/p/6129630.html">图解排序算法(三)之堆排序</a></p>
+<p><a href="https://blog.csdn.net/loveliuzz/article/details/77618530">排序算法之 堆排序 及其时间复杂度和空间复杂度</a></p>
+<p><a href="https://blog.csdn.net/wenqian1991/article/details/20632309">【经典排序算法】选择排序、堆排序</a></p>
+<p><a href="https://blog.csdn.net/misayaaaaa/article/details/65999854">C++ 堆排序算法的实现与改进(含笔试面试题)</a></p>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta size-small is-uppercase level is-mobile"><div class="level-left"><time class="level-item" dateTime="2020-02-28T01:27:04.000Z" title="2020-02-28T01:27:04.000Z">2020-02-28</time><span class="level-item">26 分钟 读完 (大约 3965 个字)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2020/02/28/20200228-%E3%80%8A%E5%88%BB%E6%84%8F%E7%BB%83%E4%B9%A0%EF%BC%9A%E5%A6%82%E4%BD%95%E4%BB%8E%E6%96%B0%E6%89%8B%E5%88%B0%E5%A4%A7%E5%B8%88%E3%80%8B%E7%AC%94%E8%AE%B0/">20200228-《刻意练习：如何从新手到大师》笔记</a></h1><div class="content"><h2 id="《刻意练习：如何从新手到大师》笔记"><a href="#《刻意练习：如何从新手到大师》笔记" class="headerlink" title="《刻意练习：如何从新手到大师》笔记"></a>《刻意练习：如何从新手到大师》笔记</h2><h3 id="个人总结"><a href="#个人总结" class="headerlink" title="个人总结"></a>个人总结</h3><h4 id="刻意练习是什么？"><a href="#刻意练习是什么？" class="headerlink" title="刻意练习是什么？"></a>刻意练习是什么？</h4><p>刻意练习即是<strong>有目的的练习</strong>。<br>人们对某一领域或者某项技能进行针对性的训练，以培养出大量的、高质量的<strong>心理表征</strong>（针对该领域或该项技能），这一过程就是刻意练习。</p>
+<p>注：<br>心理表征是<strong>预先存在的心理模式</strong>（比如事实、图片、规则、关系等等），并<strong>保存在长时记忆中</strong>，可用于有效快速地顺应某些局面。<br>比如：做乘法运算时，自然而然的会想起乘法口诀，这乘法口诀就是已经存在的心理表征。</p>
+<h4 id="为什么要刻意练习？"><a href="#为什么要刻意练习？" class="headerlink" title="为什么要刻意练习？"></a>为什么要刻意练习？</h4><p>简单来说，通过刻意练习可以成为某个领域的专家，或者快速地掌握某项技能。</p>
+<p>本质是，刻意练习是为了创建心理表征，而心理表征的作用是：</p>
+<ul>
+<li>脑中已存在的心理表征帮助转换相关的新知识为长时记忆。比如：掌握C语言再学C++将会轻松很多。</li>
+<li>根据脑中已有的心理表征和当前的局面，预测局面的后续发展。比如：LOL胜负的预判。</li>
+<li>短时记忆不能存储太多事物，若事物太多又综合考虑，将导致漏判、误判等错误；而当有大量高质量模式时，能快速将新知识转换为长时记忆，再综合考虑，最后给出最优方案。</li>
+<li>高质量、细致的模式，能在学习时将当前学习情况和理想情况比较，以发现和纠正错误，起到<strong>反馈</strong>作用。</li>
+</ul>
+<h4 id="怎么样刻意练习？"><a href="#怎么样刻意练习？" class="headerlink" title="怎么样刻意练习？"></a>怎么样刻意练习？</h4><ol>
+<li>寻找领域内的杰出人物。（确立目标，通过刻意练习后，在某一领域我的能力应该和他一样，甚至超越他。）</li>
+<li>杰出人物何处优于自身：是多掌握某个技能？还是某个已掌握的技能，杰出人物的熟练度高于自身。（找出是什么差异，导致我在某一领域内不如他。）</li>
+<li>寻找杰出人物是如何掌握或提高那项技能，相应的训练方法是什么。（针对差异，然后尝试搞明白他是如何弥补的，具体方式是什么？）</li>
+<li>实践训练方法以提升技能。（套用他的方法，尝试弥补差异。）</li>
+<li>实时地将自身与杰出人物对比，进行反馈，以纠正训练方法。（<strong>反馈很重要</strong>）（套用方法后，要实时将测试结果和他对比，看方法是否起效，如果不是，则要调整方法。）</li>
+</ol>
+<h3 id="序"><a href="#序" class="headerlink" title="序"></a>序</h3><h4 id="1万小时定律究竟有哪些问题呢？"><a href="#1万小时定律究竟有哪些问题呢？" class="headerlink" title="1万小时定律究竟有哪些问题呢？"></a>1万小时定律究竟有哪些问题呢？</h4><h5 id="作者观点"><a href="#作者观点" class="headerlink" title="作者观点"></a>作者观点</h5><ul>
+<li>不同专业领域技能的习得时间并不存在一个1万小时的最低阈值。</li>
+<li>成功与练习时间并不完全成正比，天赋虽然在其中不起决定性作用，但也是影响因子。</li>
+<li>练习的成果并不与练习时间呈正相关，而是取决于练习方法。</li>
+</ul>
+<h4 id="刻意练习的核心观点是什么？"><a href="#刻意练习的核心观点是什么？" class="headerlink" title="刻意练习的核心观点是什么？"></a>刻意练习的核心观点是什么？</h4><h5 id="作者观点-1"><a href="#作者观点-1" class="headerlink" title="作者观点"></a>作者观点</h5><p><strong>那些处于中上水平的人们，拥有一种较强的记忆能力：长时记忆。</strong>长时记忆正是区分卓越者与一般人的一个重要能力，它才是刻意练习的指向与本质。这种长时记忆能力，艾利克森认为是与具体领域相关的，并且通过他所说的刻意练习可以习得。</p>
+<h4 id="如何培养长时记忆？"><a href="#如何培养长时记忆？" class="headerlink" title="如何培养长时记忆？"></a>如何培养长时记忆？</h4><h5 id="作者观点-2"><a href="#作者观点-2" class="headerlink" title="作者观点"></a>作者观点</h5><ul>
+<li>赋予意义。</li>
+<li>知识结构化。</li>
+<li>大量重复的刻意练习。</li>
+</ul>
+<h3 id="第1章-有目的的练习"><a href="#第1章-有目的的练习" class="headerlink" title="第1章 有目的的练习"></a>第1章 有目的的练习</h3><h4 id="刻意练习与普通练习区别在哪？"><a href="#刻意练习与普通练习区别在哪？" class="headerlink" title="刻意练习与普通练习区别在哪？"></a>刻意练习与普通练习区别在哪？</h4><h5 id="作者观点-3"><a href="#作者观点-3" class="headerlink" title="作者观点"></a>作者观点</h5><p>普通练习：只是埋头干、只是反复地做某件事。<br>刻意练习：有目的的练习。</p>
+<h4 id="刻意练习有哪些特点？"><a href="#刻意练习有哪些特点？" class="headerlink" title="刻意练习有哪些特点？"></a>刻意练习有哪些特点？</h4><h5 id="作者观点-4"><a href="#作者观点-4" class="headerlink" title="作者观点"></a>作者观点</h5><ul>
+<li>目标明确。</li>
+<li>专注地执行任务。</li>
+<li>任务结束后总结得失，并给予奖励或惩罚。</li>
+<li>逐步地、持续地迎接新挑战。</li>
+</ul>
+<h3 id="第2章-大脑的适应能力"><a href="#第2章-大脑的适应能力" class="headerlink" title="第2章 大脑的适应能力"></a>第2章 大脑的适应能力</h3><h4 id="大脑如何适应学习？"><a href="#大脑如何适应学习？" class="headerlink" title="大脑如何适应学习？"></a>大脑如何适应学习？</h4><h5 id="作者观点-5"><a href="#作者观点-5" class="headerlink" title="作者观点"></a>作者观点</h5><ul>
+<li>大脑拥有无限的适应能力。</li>
+<li>大脑和身体一样，对于处在舒适区外却离得并不太远的“甜蜜点”上的挑战，改变最为迅速。</li>
+<li>经常性的训练会使大脑中受到训练挑战的区域发生改变。</li>
+<li>青少年、儿童的大脑比成年人更具适应力。</li>
+<li>强化某些能力，可能会弱化另一些能力。</li>
+<li>若停止训练，因训练引起的变化将逐渐消失。</li>
+</ul>
+<h3 id="第3章-心理表征"><a href="#第3章-心理表征" class="headerlink" title="第3章 心理表征"></a>第3章 心理表征</h3><h4 id="什么是心理表征？"><a href="#什么是心理表征？" class="headerlink" title="什么是心理表征？"></a>什么是心理表征？</h4><h5 id="个人观点"><a href="#个人观点" class="headerlink" title="个人观点"></a>个人观点</h5><p>心理表征是<strong>预先存在的心理模式</strong>（比如事实、图片、规则、关系等等），并<strong>保存在长时记忆中</strong>，可用于有效快速地顺应某些局面。</p>
+<h4 id="心理表征的作用？"><a href="#心理表征的作用？" class="headerlink" title="心理表征的作用？"></a>心理表征的作用？</h4><h5 id="作者观点-6"><a href="#作者观点-6" class="headerlink" title="作者观点"></a>作者观点</h5><ul>
+<li>脑中已存在的模式帮助转换相关的新知识为长时记忆。</li>
+<li>根据脑中已有的模式和当前的局面，预测局面的后续发展。</li>
+<li>短时记忆不能存储太多事物，若事物太多将综合考虑，导致漏判、误判等错误；而当有大量高质量模式时，能快速将新知识转换为长时记忆，再综合考虑，最后给出最优方案。</li>
+<li>高质量、细致的模式，能在学习时辅助比较当前学习情况，发现和纠正错误。</li>
+</ul>
+<h3 id="第-4-章-黄金标准"><a href="#第-4-章-黄金标准" class="headerlink" title="第 4 章 黄金标准"></a>第 4 章 黄金标准</h3><h4 id="刻意练习的具体步骤有哪些？"><a href="#刻意练习的具体步骤有哪些？" class="headerlink" title="刻意练习的具体步骤有哪些？"></a>刻意练习的具体步骤有哪些？</h4><h5 id="作者观点-7"><a href="#作者观点-7" class="headerlink" title="作者观点"></a>作者观点</h5><ol>
+<li>客观地辨别杰出人物。</li>
+<li>推测什么使他们杰出。</li>
+<li>找出杰出人物的训练方法。</li>
+</ol>
+<h4 id="刻意练习有哪些特点？-1"><a href="#刻意练习有哪些特点？-1" class="headerlink" title="刻意练习有哪些特点？"></a>刻意练习有哪些特点？</h4><h5 id="作者观点-8"><a href="#作者观点-8" class="headerlink" title="作者观点"></a>作者观点</h5><ul>
+<li>刻意练习的技能已经成熟且训练方式也已成熟。</li>
+<li>刻意练习需要持续挑战舒适区边缘。</li>
+<li>刻意练习需要明确的目标。</li>
+<li>刻意练习需要保持动力。</li>
+<li>刻意练习需要反馈。</li>
+<li>刻意练习产生高质量模式，模式又帮助刻意练习。</li>
+<li>刻意练习是逐步的。</li>
+</ul>
+<h3 id="第-5-章-在工作中运用刻意练习原则"><a href="#第-5-章-在工作中运用刻意练习原则" class="headerlink" title="第 5 章 在工作中运用刻意练习原则"></a>第 5 章 在工作中运用刻意练习原则</h3><h4 id="是否只要学习知识就能掌握对应技能？"><a href="#是否只要学习知识就能掌握对应技能？" class="headerlink" title="是否只要学习知识就能掌握对应技能？"></a>是否只要学习知识就能掌握对应技能？</h4><h5 id="作者观点-9"><a href="#作者观点-9" class="headerlink" title="作者观点"></a>作者观点</h5><p>学会知识不等于掌握技能。</p>
+<h4 id="刻意练习的具体步骤有哪些？-1"><a href="#刻意练习的具体步骤有哪些？-1" class="headerlink" title="刻意练习的具体步骤有哪些？"></a>刻意练习的具体步骤有哪些？</h4><h5 id="作者观点-10"><a href="#作者观点-10" class="headerlink" title="作者观点"></a>作者观点</h5><ol>
+<li>寻找领域内的杰出人物。</li>
+<li>杰出人物何处优于自身：是多掌握某个技能？还是某个已掌握的技能，杰出人物的熟练度高于自身。</li>
+<li>寻找杰出人物是如何掌握或提高那项技能，相应的训练方法是什么。</li>
+<li>实践训练方法以提升技能。</li>
+<li>实时地将自身与杰出人物对比，进行反馈，以纠正训练方法。（<strong>反馈很重要</strong>）</li>
+</ol>
+<h4 id="刻意练习如何运用于实际？"><a href="#刻意练习如何运用于实际？" class="headerlink" title="刻意练习如何运用于实际？"></a>刻意练习如何运用于实际？</h4><h5 id="作者观点-11"><a href="#作者观点-11" class="headerlink" title="作者观点"></a>作者观点</h5><p>制定致力于<strong>改进技能</strong>的培训计划，以代替那些致力于传授知识的培训计划。</p>
+<h3 id="第-6-章-在生活中运用刻意练习原则"><a href="#第-6-章-在生活中运用刻意练习原则" class="headerlink" title="第 6 章 在生活中运用刻意练习原则"></a>第 6 章 在生活中运用刻意练习原则</h3><h4 id="刻意练习中导师有何作用？"><a href="#刻意练习中导师有何作用？" class="headerlink" title="刻意练习中导师有何作用？"></a>刻意练习中导师有何作用？</h4><h5 id="作者观点-12"><a href="#作者观点-12" class="headerlink" title="作者观点"></a>作者观点</h5><p>帮助学生创建高质量的心理模式。</p>
+<h4 id="导师如何帮助学生创建高质量的心理模式？"><a href="#导师如何帮助学生创建高质量的心理模式？" class="headerlink" title="导师如何帮助学生创建高质量的心理模式？"></a>导师如何帮助学生创建高质量的心理模式？</h4><h5 id="作者观点-13"><a href="#作者观点-13" class="headerlink" title="作者观点"></a>作者观点</h5><ul>
+<li>针对特定问题，提供特定训练方法。</li>
+<li>提供反馈，指出学生当前训练中的问题。</li>
+</ul>
+<h4 id="学生如何选择导师？"><a href="#学生如何选择导师？" class="headerlink" title="学生如何选择导师？"></a>学生如何选择导师？</h4><h5 id="作者观点-14"><a href="#作者观点-14" class="headerlink" title="作者观点"></a>作者观点</h5><ul>
+<li>在目标领域的能力优于学生，即在目标领域拥有更高质量的心理模式。</li>
+<li>大神不一定是优秀导师，因为大神不一定善于教导。</li>
+</ul>
+<h4 id="如何刻意练习？"><a href="#如何刻意练习？" class="headerlink" title="如何刻意练习？"></a>如何刻意练习？</h4><h5 id="作者观点-15"><a href="#作者观点-15" class="headerlink" title="作者观点"></a>作者观点</h5><ol>
+<li>练习有目的<ul>
+<li>走出舒适区、迎接挑战。</li>
+</ul>
+</li>
+<li>练习要专注<ul>
+<li>宁可缩短练习时间，也要保证练习的专注。</li>
+<li>专注的练习并不会使人快乐，但使人进步。</li>
+</ul>
+</li>
+<li>练习有反馈<ul>
+<li>发现练习中的问题。</li>
+<li>针对问题提出特定练习方法。</li>
+<li>练习遇到瓶颈很正常，切忌蛮干，寻找问题所在，并尝试新的练习方法（更好）或者哪怕仅是改变练习方法（同等）。</li>
+</ul>
+</li>
+<li>练习要动机<ul>
+<li>精心设置目标，使练习获得阶段性成果，则将持续提供动力。</li>
+</ul>
+</li>
+</ol>
+<h4 id="如何保持动力？"><a href="#如何保持动力？" class="headerlink" title="如何保持动力？"></a>如何保持动力？</h4><h5 id="作者观点-16"><a href="#作者观点-16" class="headerlink" title="作者观点"></a>作者观点</h5><ol>
+<li>良好习惯辅助刻意练习<ul>
+<li>良好的睡眠习惯。</li>
+</ul>
+</li>
+<li>继续前行的理由<ul>
+<li>精心设置目标，使练习获得阶段性成果，则将持续提供动力。</li>
+<li>相信自己可以成功{大多数企业家就这么自信}。</li>
+<li>因某些原因导致水平退步，则提出协议，恢复到以前水平就可以选择放弃{那时可能就不会放弃}。</li>
+<li>社会动机：得到认可和崇拜；在团体中学习，切记确保其他成员也有类似的进步目标，不然，反而会拖累自己。</li>
+</ul>
+</li>
+<li>弱化停下脚步的理由<ul>
+<li>相信意志力并不存在。</li>
+<li>相信没有所谓的天才，天才都是练出来的。</li>
+<li>规划一天的时间，为某个练习留出固定时间：当还存在其它要做事务时，将会面临一种持续不断的诱惑去做别的事（特别是那种比当前训练更简单的事），并告诉自己那件事真的也的去做，以此来当作分神的借口。若经常这么干，则练习开始变得越来越少，很快，训练计划泡汤。{<strong>自身经常犯</strong>}</li>
+<li>保证充足的睡眠。</li>
+<li>缩短单次练习时间，保证练习的专注。</li>
+</ul>
+</li>
+</ol>
+<h3 id="第-7-章-成为杰出人物的路线图"><a href="#第-7-章-成为杰出人物的路线图" class="headerlink" title="第 7 章 成为杰出人物的路线图"></a>第 7 章 成为杰出人物的路线图</h3><h4 id="如何成为杰出人物？"><a href="#如何成为杰出人物？" class="headerlink" title="如何成为杰出人物？"></a>如何成为杰出人物？</h4><h5 id="作者观点-17"><a href="#作者观点-17" class="headerlink" title="作者观点"></a>作者观点</h5><ol>
+<li>产生兴趣<br>孩子的好奇心会使其在某一或若干领域产生兴趣。<br>此阶段，父母需要进行两项任务：<ul>
+<li>对孩子进行引导，主要以玩的方式帮助孩子掌握某个领域的基础技能。</li>
+<li>给孩子提供动力，比如表扬和认可、兄弟姐妹间的良性竞争等等。</li>
+</ul>
+</li>
+<li>变得认真<br>主要由孩子自身来保持动力（参加他们喜欢的相关活动，得到周围人的表扬和认可等等），其它（父母的表扬和认可等等）起辅助作用。<br>此阶段，需要寻找领域内的导师对其进行教导，导师不一定要是领域内的专家，但应做到：<ul>
+<li>使孩子保持动力。</li>
+<li>指明方向并提供相应的训练方法，使孩子掌握领域内的高级技能。</li>
+</ul>
+</li>
+<li>全力投入<br>几乎完全由孩子自身来保持动力（为磨练技能、提升能力等等）。<br>此阶段，需要寻找领域内的顶尖专家来教导孩子。</li>
+<li>开拓创新<br>到此阶段时，孩子应已成为领域内的专家，并通过前几个阶段刻意练习学得的心理模式，来对领域内的未知区域进行探索，以进行创新。</li>
+</ol>
+<h4 id="为什么某些技能仅能在幼年阶段学习，而在成年阶段难以习得？"><a href="#为什么某些技能仅能在幼年阶段学习，而在成年阶段难以习得？" class="headerlink" title="为什么某些技能仅能在幼年阶段学习，而在成年阶段难以习得？"></a>为什么某些技能仅能在幼年阶段学习，而在成年阶段难以习得？</h4><h5 id="作者观点-18"><a href="#作者观点-18" class="headerlink" title="作者观点"></a>作者观点</h5><ul>
+<li>孩子比成年人具有更好的生理适应能力和心理适应能力。</li>
+<li>对同一技能的学习，孩子的大脑和成年人的大脑采取不同的措施来适应。</li>
+</ul>
+<h3 id="第-8-章-怎样解释天生才华"><a href="#第-8-章-怎样解释天生才华" class="headerlink" title="第 8 章 怎样解释天生才华"></a>第 8 章 怎样解释天生才华</h3><h4 id="真有天生的才华吗？"><a href="#真有天生的才华吗？" class="headerlink" title="真有天生的才华吗？"></a>真有天生的才华吗？</h4><h5 id="作者观点-19"><a href="#作者观点-19" class="headerlink" title="作者观点"></a>作者观点</h5><p>杰出人物通过年复一年的刻意练习，在漫长而艰苦的过程中一步一步改进，终于练就了他们杰出的能力。没有捷径可走。</p>
+<h4 id="为什么会出现付出更多努力的人取得的成就低于付出努力少于他们的人？"><a href="#为什么会出现付出更多努力的人取得的成就低于付出努力少于他们的人？" class="headerlink" title="为什么会出现付出更多努力的人取得的成就低于付出努力少于他们的人？"></a>为什么会出现付出更多努力的人取得的成就低于付出努力少于他们的人？</h4><h5 id="作者观点-20"><a href="#作者观点-20" class="headerlink" title="作者观点"></a>作者观点</h5><p>相比练习时间、天赋等因素来说，练习方式起到更大的作用。</p>
+<h4 id="为什么大众总是乐于相信天生才华？"><a href="#为什么大众总是乐于相信天生才华？" class="headerlink" title="为什么大众总是乐于相信天生才华？"></a>为什么大众总是乐于相信天生才华？</h4><h5 id="个人观点-1"><a href="#个人观点-1" class="headerlink" title="个人观点"></a>个人观点</h5><ol>
+<li>为自己的失败、无能、懒惰等开脱。</li>
+<li>幻想自己也具有天生才华，并且会在某天显露。</li>
+</ol>
+<h4 id="为什么有些人认为自己天生不具备某种能力，比如唱歌？"><a href="#为什么有些人认为自己天生不具备某种能力，比如唱歌？" class="headerlink" title="为什么有些人认为自己天生不具备某种能力，比如唱歌？"></a>为什么有些人认为自己天生不具备某种能力，比如唱歌？</h4><h5 id="作者观点-21"><a href="#作者观点-21" class="headerlink" title="作者观点"></a>作者观点</h5><ol>
+<li>人在某个领域缺乏才能，是因为没有进行过练习。</li>
+<li>人们停止学习和进步的脚步，并不是因为他们达到了某种天生的极限，而是因为他们停止了训练，或者不论出于什么原因，从来没有开始过训练。</li>
+</ol>
+<h4 id="高智商的人是否更能成才？"><a href="#高智商的人是否更能成才？" class="headerlink" title="高智商的人是否更能成才？"></a>高智商的人是否更能成才？</h4><h5 id="作者观点-22"><a href="#作者观点-22" class="headerlink" title="作者观点"></a>作者观点</h5><ol>
+<li>智商和成才的关系相当弱，只在学习初期起到一定作用，比如掌握学习规则、技巧等。</li>
+<li>练习时间比智商重要的多。</li>
+<li>刻意练习更重要，因为这能创建更高质量、更多数量的心理模式。</li>
+</ol>
+<h4 id="相信天生才华会产生什么影响？"><a href="#相信天生才华会产生什么影响？" class="headerlink" title="相信天生才华会产生什么影响？"></a>相信天生才华会产生什么影响？</h4><h5 id="作者观点-23"><a href="#作者观点-23" class="headerlink" title="作者观点"></a>作者观点</h5><p>相信天生才华将导致马太效应，即<strong>穷者愈穷，富者愈富</strong>。<br>对学习领域，在学习初期建立优势的学生，往往能获得更多的资源，比如导师的指导、同学的认同等等，因此越有动力去刻意练习，然后获得更高的成就，如此形成良性循环。</p>
+<h3 id="第-9-章-用刻意练习创造全新的世界"><a href="#第-9-章-用刻意练习创造全新的世界" class="headerlink" title="第 9 章 用刻意练习创造全新的世界"></a>第 9 章 用刻意练习创造全新的世界</h3><h4 id="在学习上，刻意练习的方法与传统方法之间的重要差别？"><a href="#在学习上，刻意练习的方法与传统方法之间的重要差别？" class="headerlink" title="在学习上，刻意练习的方法与传统方法之间的重要差别？"></a>在学习上，刻意练习的方法与传统方法之间的重要差别？</h4><h5 id="作者观点-24"><a href="#作者观点-24" class="headerlink" title="作者观点"></a>作者观点</h5><p>刻意练习强调你可以<strong>做什么</strong>，传统方法强调你应该知道什么。<strong>刻意练习全都是关于技能的。你选择学习必要的知识，是为了培育技能；知识本身绝不是学习的目的。</strong></p>
+<h4 id="为什么说掌握技能比掌握知识更重要？"><a href="#为什么说掌握技能比掌握知识更重要？" class="headerlink" title="为什么说掌握技能比掌握知识更重要？"></a>为什么说掌握技能比掌握知识更重要？</h4><h5 id="个人观点-2"><a href="#个人观点-2" class="headerlink" title="个人观点"></a>个人观点</h5><ol>
+<li>掌握知识是掌握技能的前提。</li>
+<li>技能更容易量化，也更明确。</li>
+</ol>
+<h4 id="为什么一个行业的专家往往能在另一个不相关的行业中以比普通人更快的速度进步？"><a href="#为什么一个行业的专家往往能在另一个不相关的行业中以比普通人更快的速度进步？" class="headerlink" title="为什么一个行业的专家往往能在另一个不相关的行业中以比普通人更快的速度进步？"></a>为什么一个行业的专家往往能在另一个不相关的行业中以比普通人更快的速度进步？</h4><h5 id="个人观点-3"><a href="#个人观点-3" class="headerlink" title="个人观点"></a>个人观点</h5><p>当学生在导师帮助下，在某个领域中创建大量的、高质量的心理表征后，学生也习得创建心理表征的能力，而这个能力则可以在其它领域中用于帮助创建心理表征。</p>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta size-small is-uppercase level is-mobile"><div class="level-left"><time class="level-item" dateTime="2020-02-27T19:31:08.000Z" title="2020-02-27T19:31:08.000Z">2020-02-28</time><span class="level-item">4 分钟 读完 (大约 566 个字)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2020/02/28/20200228-%E5%BD%92%E5%B9%B6%E6%8E%92%E5%BA%8F/">20200228-归并排序</a></h1><div class="content"><h3 id="归并排序"><a href="#归并排序" class="headerlink" title="归并排序"></a>归并排序</h3><p>归并排序是约翰·冯·诺伊曼（John von Neumann）于1945年提出的一种排序算法。</p>
+<h4 id="思想"><a href="#思想" class="headerlink" title="思想"></a>思想</h4><p>归并排序是根据归并思想实现的排序方法，采用分治策略。</p>
+
+
+<p>归并方法：</p>
+<ol>
+<li><p>计算左右数组长度。</p>
+</li>
+<li><p>创建两个新的数组L和R，并把左右数组分别拷贝进去。</p>
+</li>
+<li><p>合并L和R数组，把内容整合到原始数组A。</p>
+
+
+</li>
+</ol>
+<h4 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h4><p><strong>递归方式</strong>：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 归并排序，使用递归的方式</span></span><br><span class="line"> <span class="function"><span class="keyword">void</span> <span class="title">mergeSort</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums, <span class="keyword">int</span> <span class="built_in">begin</span>, <span class="keyword">int</span> <span class="built_in">end</span>)</span></span></span><br><span class="line"><span class="function"> </span>&#123;</span><br><span class="line">     <span class="comment">// 分</span></span><br><span class="line">     <span class="keyword">if</span> (<span class="built_in">begin</span> &gt;= <span class="built_in">end</span>) <span class="comment">// 当数组的头部下标和尾部下标重叠时，说明已经分割到当前数组只剩下一个数，则递归返回。</span></span><br><span class="line">         <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">     <span class="keyword">int</span> middle = (<span class="built_in">end</span> + <span class="built_in">begin</span>) / <span class="number">2</span>;</span><br><span class="line">     mergeSort(nums, <span class="built_in">begin</span>, middle); <span class="comment">// 对左数组进行递归。</span></span><br><span class="line">     mergeSort(nums, middle + <span class="number">1</span>, <span class="built_in">end</span>); <span class="comment">// 对右数组进行递归。</span></span><br><span class="line"></span><br><span class="line">     <span class="comment">// 治</span></span><br><span class="line">     merge(nums, <span class="built_in">begin</span>, middle, <span class="built_in">end</span>);</span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line"> <span class="function"><span class="keyword">void</span> <span class="title">merge</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums, <span class="keyword">int</span> <span class="built_in">begin</span>, <span class="keyword">int</span> middle, <span class="keyword">int</span> <span class="built_in">end</span>)</span></span></span><br><span class="line"><span class="function"> </span>&#123;</span><br><span class="line">     <span class="comment">// 计算左右数组长度。</span></span><br><span class="line">     <span class="keyword">int</span> leftSubArrayLength = middle - <span class="built_in">begin</span> + <span class="number">1</span>;</span><br><span class="line">     <span class="keyword">int</span> rightSubArrayLength = <span class="built_in">end</span> - middle;</span><br><span class="line"></span><br><span class="line">     <span class="comment">// 创建两个新的数组L和R，并把左右数组分别拷贝进去。</span></span><br><span class="line">     <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; leftSubArray, rightSubArray;</span><br><span class="line">     <span class="keyword">for</span> (<span class="keyword">auto</span> i = <span class="built_in">begin</span>; i &lt;= middle; i++) <span class="comment">// 拷贝到左数组。</span></span><br><span class="line">         leftSubArray.push_back(nums[i]);</span><br><span class="line">     <span class="keyword">for</span> (<span class="keyword">auto</span> i = middle+<span class="number">1</span>; i &lt;= <span class="built_in">end</span>; i++) <span class="comment">// 拷贝到右数组。</span></span><br><span class="line">         rightSubArray.push_back(nums[i]);</span><br><span class="line">     </span><br><span class="line">     <span class="comment">//合并L和R数组，把内容整合到原始数组A。</span></span><br><span class="line">     <span class="keyword">int</span> idxLeftSubArray = <span class="number">0</span>, idxRightSubArray = <span class="number">0</span>;</span><br><span class="line">     <span class="keyword">int</span> idx = <span class="built_in">begin</span>;</span><br><span class="line">     <span class="keyword">while</span> (idxLeftSubArray &lt; leftSubArrayLength &amp;&amp; idxRightSubArray &lt; rightSubArrayLength)</span><br><span class="line">         nums[idx++] = (leftSubArray[idxLeftSubArray] &lt;= rightSubArray[idxRightSubArray]) ? leftSubArray[idxLeftSubArray++] : rightSubArray[idxRightSubArray++];</span><br><span class="line">     <span class="keyword">while</span> (idxLeftSubArray &lt; leftSubArrayLength)</span><br><span class="line">         nums[idx++] = leftSubArray[idxLeftSubArray++];</span><br><span class="line">     <span class="keyword">while</span> (idxRightSubArray &lt; rightSubArrayLength)</span><br><span class="line">         nums[idx++] = rightSubArray[idxRightSubArray++];</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="复杂度"><a href="#复杂度" class="headerlink" title="复杂度"></a>复杂度</h4><h5 id="时间复杂度"><a href="#时间复杂度" class="headerlink" title="时间复杂度"></a>时间复杂度</h5><p>若数组长度为n，最坏时间复杂度为O(nlgn)。</p>
+<h5 id="空间复杂度"><a href="#空间复杂度" class="headerlink" title="空间复杂度"></a>空间复杂度</h5><p>需要辅助空间来暂存两有序子数组，故空间复杂度为O(n)。</p>
+<h4 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h4><p><a href="https://www.cnblogs.com/chengxiao/p/6194356.html"><a href="https://www.cnblogs.com/chengxiao/p/6194356.html">图解排序算法(四)之归并排序</a></a></p>
+<p><a href="https://www.jianshu.com/p/550cf367a5e8">归并排序（MergeSort）——算法导论</a></p>
+<p><a href="https://blog.csdn.net/qq_25827845/article/details/70994874">“深入理解”—归并排序算法</a></p>
+<p><a href="https://zh.wikipedia.org/wiki/%E5%BD%92%E5%B9%B6%E6%8E%92%E5%BA%8F#%E9%80%92%E5%BD%92%E6%B3%95%EF%BC%88Top-down%EF%BC%89">维基百科 归并排序</a></p>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta size-small is-uppercase level is-mobile"><div class="level-left"><time class="level-item" dateTime="2020-02-27T04:36:46.000Z" title="2020-02-27T04:36:46.000Z">2020-02-27</time><span class="level-item">3 分钟 读完 (大约 523 个字)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2020/02/27/20200227-Source-Insight%E9%85%8D%E7%BD%AE%E7%AC%94%E8%AE%B0/">20200227-Source Insight配置笔记</a></h1><div class="content"><h3 id="Source-Insight配置教程"><a href="#Source-Insight配置教程" class="headerlink" title="Source Insight配置教程"></a>Source Insight配置教程</h3><p>source insight 配置文件放置在百度云。</p>
+<h4 id="基本功能"><a href="#基本功能" class="headerlink" title="基本功能"></a>基本功能</h4><ul>
+<li>语法高亮</li>
+<li>代码提示：类型、变量、函数等。</li>
+<li>括号、单引号、双引号之类的自动补全</li>
+<li>代码导航：跳转到定义，调用处。</li>
+</ul>
+<h4 id="自定义快捷键"><a href="#自定义快捷键" class="headerlink" title="自定义快捷键"></a>自定义快捷键</h4><p>文本操作，ctrl+单操作,alt+单操作<br>其它，ctl+alt+单操作</p>
+<table>
+<thead>
+<tr>
+<th>基本移动操作</th>
+<th>快捷键</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Cursor Up</td>
+<td>Ctrl+P</td>
+</tr>
+<tr>
+<td>Cursor Down</td>
+<td>Ctrl+N</td>
+</tr>
+<tr>
+<td>Cursor Right</td>
+<td>Ctrl+F</td>
+</tr>
+<tr>
+<td>Cursor Left</td>
+<td>Ctrl+B</td>
+</tr>
+<tr>
+<td>—-</td>
+<td>—-</td>
+</tr>
+<tr>
+<td>Word Left</td>
+<td>Alt+B</td>
+</tr>
+<tr>
+<td>Word Right</td>
+<td>Alt+F</td>
+</tr>
+<tr>
+<td>—-</td>
+<td>—-</td>
+</tr>
+<tr>
+<td>End Of Line</td>
+<td>Ctrl+E</td>
+</tr>
+<tr>
+<td>Beginning Of Line</td>
+<td>Ctrl+A</td>
+</tr>
+<tr>
+<td><strong>文件操作</strong></td>
+<td><strong>快捷键</strong></td>
+</tr>
+<tr>
+<td>Close File</td>
+<td>Ctrl+Alt+C</td>
+</tr>
+<tr>
+<td>Open File</td>
+<td>Ctrl+Alt+F</td>
+</tr>
+<tr>
+<td>Save File</td>
+<td>Ctrl+Alt+S</td>
+</tr>
+<tr>
+<td><strong>编辑操作</strong></td>
+<td><strong>快捷键</strong></td>
+</tr>
+<tr>
+<td>Backspace</td>
+<td>Backspace</td>
+</tr>
+<tr>
+<td>Enter</td>
+<td>Enter</td>
+</tr>
+<tr>
+<td>Tab</td>
+<td>Tab</td>
+</tr>
+<tr>
+<td>Copy</td>
+<td>Ctrl+C</td>
+</tr>
+<tr>
+<td>Paste</td>
+<td>Ctrl+V</td>
+</tr>
+<tr>
+<td>Cut</td>
+<td>Ctrl+W</td>
+</tr>
+<tr>
+<td>Delete Character</td>
+<td>Ctrl+D</td>
+</tr>
+<tr>
+<td>Delete Line</td>
+<td>Ctrl+K</td>
+</tr>
+<tr>
+<td>Undo</td>
+<td>Ctrl+Z</td>
+</tr>
+<tr>
+<td>Replace</td>
+<td>Ctrl+H</td>
+</tr>
+<tr>
+<td><strong>导航操作</strong></td>
+<td><strong>快捷键</strong></td>
+</tr>
+<tr>
+<td>Jump To Definition</td>
+<td>Ctrl+，</td>
+</tr>
+<tr>
+<td>Jump To Caller</td>
+<td>Ctrl+.</td>
+</tr>
+<tr>
+<td><strong>其它</strong></td>
+<td><strong>快捷键</strong></td>
+</tr>
+<tr>
+<td>使用astyle自动格式化代码文本</td>
+<td>Ctrl+T</td>
+</tr>
+</tbody></table>
+<h4 id="Source-Insight使用"><a href="#Source-Insight使用" class="headerlink" title="Source Insight使用"></a>Source Insight使用</h4><ol>
+<li><p>在需要审计的工程根目录下，新建SI目录，用于存储Source Insight产生的文件。</p>
+
+</li>
+<li><p>新建Source Insight工程：Project -&gt; New Project。</p>
+</li>
+<li><p>修改工程名和存储路径，点击OK。</p>
+
+</li>
+<li><p>在File Path中选择待审计工程的目录，点击OK。</p>
+
+</li>
+<li><p>在Directory栏中选中工程目录，取消勾选Show only known file types，点击Add Tree；再选中IS目录，点击Remove Tree；最后点击close。</p>
+
+
+</li>
+</ol>
+<h4 id="FAQ"><a href="#FAQ" class="headerlink" title="FAQ"></a>FAQ</h4><h5 id="中文乱码"><a href="#中文乱码" class="headerlink" title="中文乱码"></a>中文乱码</h5><p>【File】-&gt;【Reload As Encoding…】-&gt;【Chinese Simplified (GB18030)】-&gt;选择后，点击load，问题解决！！！</p>
+<p><a href="https://blog.csdn.net/xiaohuima_dong/article/details/73224474">source insight 4 中文乱码问题</a></p>
+<h5 id="将光标变粗"><a href="#将光标变粗" class="headerlink" title="将光标变粗"></a>将光标变粗</h5><p>Options —&gt;Preferences —&gt;Typing –&gt;选中 第三行（Use block cursor shape）</p>
+<h6 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h6><p><a href="https://www.cnblogs.com/dxx-blogs/p/5168119.html">Source Insight 光标变粗设置NotePad++光标设置</a></p>
+<h5 id="如何自动格式化源码文本"><a href="#如何自动格式化源码文本" class="headerlink" title="如何自动格式化源码文本"></a>如何自动格式化源码文本</h5><p>使用astyle。</p>
+<h6 id="参考资料-1"><a href="#参考资料-1" class="headerlink" title="参考资料"></a>参考资料</h6><p><a href="http://astyle.sourceforge.net/astyle.html">http://astyle.sourceforge.net/astyle.html</a></p>
+<p><a href="https://blog.csdn.net/redeagle_gbf/article/details/81566871">https://blog.csdn.net/redeagle_gbf/article/details/81566871</a></p>
+</div></article></div><nav class="pagination is-centered mt-4" role="navigation" aria-label="pagination"><div class="pagination-previous"><a href="/page/2/">上一页</a></div><div class="pagination-next"><a href="/page/4/">下一页</a></div><ul class="pagination-list is-hidden-mobile"><li><a class="pagination-link" href="/">1</a></li><li><a class="pagination-link" href="/page/2/">2</a></li><li><a class="pagination-link is-current" href="/page/3/">3</a></li><li><a class="pagination-link" href="/page/4/">4</a></li></ul></nav></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1 is-sticky"><div class="card widget"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="/img/KaoLaTouXiang.jpeg" alt="jiangyf1220"></figure><p class="title is-size-4 is-block line-height-inherit">jiangyf1220</p><p class="is-size-6 is-block">求知若饥，虛心若愚</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>中国 浙江</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives"><p class="title">37</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories"><p class="title">0</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags"><p class="title">2</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/screw-driver" target="_blank" rel="noopener">关注我</a></div><div class="level is-mobile"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/screw-driver"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Dribbble" href="https://dribbble.com"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><!--!--><div class="card widget"><div class="card-content"><div class="menu"><h3 class="menu-label">链接</h3><ul class="menu-list"><li><a class="level is-mobile is-mobile" href="https://hexo.io" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">Hexo</span></span><span class="level-right"><span class="level-item tag">hexo.io</span></span></a></li><li><a class="level is-mobile is-mobile" href="https://bulma.io" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">Bulma</span></span><span class="level-right"><span class="level-item tag">bulma.io</span></span></a></li></ul></div></div></div><div class="column-right-shadow is-hidden-widescreen is-sticky"></div></div><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only order-3 is-sticky"><!--!--><div class="card widget"><div class="card-content"><h3 class="menu-label">最新文章</h3><article class="media"><div class="media-content size-small"><p><time dateTime="2020-08-05T07:02:01.481Z">2020-08-05</time></p><p class="title is-6"><a class="link-muted" href="/2020/08/05/20200124-Hexo%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/">20200124-Hexo搭建个人博客</a></p><p class="is-uppercase"></p></div></article><article class="media"><div class="media-content size-small"><p><time dateTime="2020-06-07T10:28:35.000Z">2020-06-07</time></p><p class="title is-6"><a class="link-muted" href="/2020/06/07/20200607-Lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F/">20200607-Lambda表达式</a></p><p class="is-uppercase"></p></div></article><article class="media"><div class="media-content size-small"><p><time dateTime="2020-05-30T03:53:37.000Z">2020-05-30</time></p><p class="title is-6"><a class="link-muted" href="/2020/05/30/20200530-Java%E6%8E%A5%E5%8F%A3/">20200530-Java接口</a></p><p class="is-uppercase"></p></div></article><article class="media"><div class="media-content size-small"><p><time dateTime="2020-03-21T01:45:24.000Z">2020-03-21</time></p><p class="title is-6"><a class="link-muted" href="/2020/03/21/20200321-%E5%86%B3%E7%AD%96%E6%A0%91/">20200321-决策树</a></p><p class="is-uppercase"></p></div></article><article class="media"><div class="media-content size-small"><p><time dateTime="2020-03-19T08:26:35.000Z">2020-03-19</time></p><p class="title is-6"><a class="link-muted" href="/2020/03/19/20200319-Ubuntu-Server-18-04%E5%AE%89%E8%A3%85Gitea/">20200319-Ubuntu Server 18.04安装Gitea</a></p><p class="is-uppercase"></p></div></article></div></div><div class="card widget"><div class="card-content"><div class="menu"><h3 class="menu-label">归档</h3><ul class="menu-list"><li><a class="level is-mobile is-marginless" href="/archives/2020/08/"><span class="level-start"><span class="level-item">八月 2020</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile is-marginless" href="/archives/2020/06/"><span class="level-start"><span class="level-item">六月 2020</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile is-marginless" href="/archives/2020/05/"><span class="level-start"><span class="level-item">五月 2020</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile is-marginless" href="/archives/2020/03/"><span class="level-start"><span class="level-item">三月 2020</span></span><span class="level-end"><span class="level-item tag">23</span></span></a></li><li><a class="level is-mobile is-marginless" href="/archives/2020/02/"><span class="level-start"><span class="level-item">二月 2020</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li></ul></div></div></div><div class="card widget"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/Java/"><span class="tag">Java</span><span class="tag is-grey-lightest">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/java/"><span class="tag">java</span><span class="tag is-grey-lightest">1</span></a></div></div></div></div></div><div class="card widget"><div class="card-content"><div class="menu"><h3 class="menu-label">订阅更新</h3><form action="https://feedburner.google.com/fb/a/mailverify" method="post" target="popupwindow" onsubmit="window.open(&#039;https://feedburner.google.com/fb/a/mailverify?uri=&#039;,&#039;popupwindow&#039;,&#039;scrollbars=yes,width=550,height=520&#039;);return true"><input type="hidden" value="" name="uri"><input type="hidden" name="loc" value="en_US"><div class="field has-addons"><div class="control has-icons-left is-expanded"><input class="input" name="email" type="email" placeholder="Email"><span class="icon is-small is-left"><i class="fas fa-envelope"></i></span></div><div class="control"><input class="button is-primary" type="submit" value="订阅"></div></div></form></div></div></div><div class="card widget"><div class="card-content"><div class="notification is-danger">You need to set <code>client_id</code> and <code>slot_id</code> to show this AD unit. Please set it in <code>_config.yml</code>.</div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="Hexo" height="28"></a><p class="size-small"><span>&copy; 2020 John Doe</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script>moment.locale("zh-CN");</script><script>var IcarusThemeSettings = {
+            site: {
+                url: 'http://yoursite.com',
+                external_link: {"enable":true,"exclude":[]}
+            },
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>

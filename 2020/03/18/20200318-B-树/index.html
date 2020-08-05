@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="generator" content="Hexo 4.2.1"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>20200318-B-树 - Hexo</title><meta description="B树为什么提出B树这一数据结构？数据库的增删改查等操作最为常见也尤为重要。树在保持查找操作效率的同时提高增删操作的效率，这也是大部分数据库的索引都采用树结构存储的原因。 当数据库过大导致不能将全部数据同时加载至内存时，使用二叉搜索树和平衡二叉树的方法就无法工作。既然不能全部加载至内存中就只能逐步的去加载磁盘中某个页，简而言之就是逐一地去加载磁盘，将数据分块地加载至内存进行查找与比较。 例如，在下图"><meta property="og:type" content="blog"><meta property="og:title" content="20200318-B-树"><meta property="og:url" content="http://yoursite.com/2020/03/18/20200318-B-%E6%A0%91/"><meta property="og:site_name" content="Hexo"><meta property="og:description" content="B树为什么提出B树这一数据结构？数据库的增删改查等操作最为常见也尤为重要。树在保持查找操作效率的同时提高增删操作的效率，这也是大部分数据库的索引都采用树结构存储的原因。 当数据库过大导致不能将全部数据同时加载至内存时，使用二叉搜索树和平衡二叉树的方法就无法工作。既然不能全部加载至内存中就只能逐步的去加载磁盘中某个页，简而言之就是逐一地去加载磁盘，将数据分块地加载至内存进行查找与比较。 例如，在下图"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="http://yoursite.com/img/og_image.png"><meta property="article:published_time" content="2020-03-18T01:30:49.000Z"><meta property="article:modified_time" content="2020-03-18T08:37:56.593Z"><meta property="article:author" content="John Doe"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2020/03/18/20200318-B-%E6%A0%91/"},"headline":"Hexo","image":["http://yoursite.com/img/og_image.png"],"datePublished":"2020-03-18T01:30:49.000Z","dateModified":"2020-03-18T08:37:56.593Z","author":{"@type":"Person","name":"John Doe"},"description":"B树为什么提出B树这一数据结构？数据库的增删改查等操作最为常见也尤为重要。树在保持查找操作效率的同时提高增删操作的效率，这也是大部分数据库的索引都采用树结构存储的原因。 当数据库过大导致不能将全部数据同时加载至内存时，使用二叉搜索树和平衡二叉树的方法就无法工作。既然不能全部加载至内存中就只能逐步的去加载磁盘中某个页，简而言之就是逐一地去加载磁盘，将数据分块地加载至内存进行查找与比较。 例如，在下图"}</script><link rel="canonical" href="http://yoursite.com/2020/03/18/20200318-B-%E6%A0%91/"><link rel="icon" href="/img/KaoLaTouXiang.jpeg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.0/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="Hexo" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">主页</a><a class="navbar-item" href="/archives">归档</a><a class="navbar-item" href="/categories">分类</a><a class="navbar-item" href="/tags">标签</a><a class="navbar-item" href="/about">关于</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/screw-driver/screw-driver.github.io"><i class="fab fa-github"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta size-small is-uppercase level is-mobile"><div class="level-left"><time class="level-item" dateTime="2020-03-18T01:30:49.000Z" title="2020-03-18T01:30:49.000Z">2020-03-18</time><span class="level-item">18 分钟 读完 (大约 2684 个字)</span></div></div><h1 class="title is-3 is-size-4-mobile">20200318-B-树</h1><div class="content"><h3 id="B树"><a href="#B树" class="headerlink" title="B树"></a>B树</h3><h4 id="为什么提出B树这一数据结构？"><a href="#为什么提出B树这一数据结构？" class="headerlink" title="为什么提出B树这一数据结构？"></a>为什么提出B树这一数据结构？</h4><p>数据库的增删改查等操作最为常见也尤为重要。树在保持查找操作效率的同时提高增删操作的效率，这也是大部分数据库的索引都采用树结构存储的原因。</p>
+<p>当<strong>数据库过大导致不能将全部数据同时加载至内存</strong>时，使用二叉搜索树和平衡二叉树的方法就无法工作。既然不能全部加载至内存中就只能逐步的去加载磁盘中某个页，简而言之就是逐一地去加载磁盘，将数据分块地加载至内存进行查找与比较。</p>
+<p>例如，在下图所示的树中查找10，树中的每个节点代表一个磁盘页，每次访问一个新节点代表一次磁盘IO。</p>
+
+
+
+
+<p>通过查找过程可以看出，<strong>磁盘IO次数与树的高度成正比</strong>，在最坏情况下，磁盘IO次数等于树的高度。由于<strong>磁盘IO过程相对处理器处理指令过程更加耗时，因此我们愿意进行大量的计算来节省磁盘IO</strong>，所以在设计数据存储结构时需要降低树的高度，即将一棵“瘦高”的树变得“矮胖”。</p>
+<p>当数据数目相同，在保持有序前提下，降低树高度，只需将节点中存储的key值增加，即<strong>二叉搜索树中每个节点只有一个key，现将一个节点中存储多个key，得到的树即为B-树</strong>。</p>
+<h4 id="什么是B树？"><a href="#什么是B树？" class="headerlink" title="什么是B树？"></a>什么是B树？</h4><p><strong>B树</strong>也称B-树,B-树直接读作B树，不能因为有“-”号就读作B减树，它是一棵多路平衡查找树。</p>
+<p>描述一颗B树时需要指定阶数，<strong>阶数表示一个结点最多拥有多少个孩子结点</strong>，一般用字母m表示阶数。当m为2时是二叉搜索树，m为3时是2-3树，m为4时是2-3-4树。</p>
+<p>一个m阶的B树具有如下属性：</p>
+<blockquote>
+<ul>
+<li>每个结点最多有m-1个关键字。</li>
+<li>根结点最少可以只有1个关键字。</li>
+<li>非根结点至少有$\lceil m/2 \rceil-1$个关键字。$\lceil m/2 \rceil$含义是向上取整。例如$\lceil 4.5 \rceil = 5$。</li>
+<li>每个结点中的关键字都按照从小到大的顺序排列，每个关键字的左子树中的所有关键字都小于它，而右子树中的所有关键字都大于它。</li>
+<li>所有叶子结点都位于同一层，或者说根结点到每个叶子结点的长度都相同。</li>
+</ul>
+</blockquote>
+
+
+<p>上图是一颗阶数为4的B树，key表示键，data表示键对应的条目在硬盘上的逻辑地址。</p>
+<h4 id="B树如何查找？"><a href="#B树如何查找？" class="headerlink" title="B树如何查找？"></a>B树如何查找？</h4><p>B树一般保存在磁盘，B树的查找跟二叉查找树的查找很像，只不过每个结点变成了一个含有多关键字的有序表。<br>B树查找的基本操作：</p>
+<blockquote>
+<ol>
+<li>在B树中找结点，把找到的结点从磁盘读入内存。</li>
+<li>在结点内找关键字，这个操作在内存中进行，相当于在一个有序表中查找关键字，可以使用顺序查找或二分查找。若在结点上找到与关键字则查找成功，否则按照对应的指针去下一个结点中找，当指针为空还没找到，则查找失败。</li>
+</ol>
+</blockquote>
+
+
+<p>以上图为例，假设要查找15的节点，查找流程如下：</p>
+<blockquote>
+<ol>
+<li>获取根节点的关键字进行比较，当前根节点关键字为50，50&gt;15，所以找到指向左边的子节点。</li>
+<li>拿到关键字10和30，10&lt;15&lt;30 所以直接找到10和30中间的指针指向的子节点。</li>
+<li>拿到关键字15，就是要查找的目标值， 所以直接返回关键字和指针信息（如果树结构里面没有包含所要查找的节点则返回null）。<br>至此便完成了B树的查找过程。</li>
+</ol>
+</blockquote>
+<h5 id="性能分析"><a href="#性能分析" class="headerlink" title="性能分析"></a>性能分析</h5><p>考虑含有N个关键字的m阶B树，其查找的最坏时间复杂度是多少？</p>
+<p>前面提及，树越高磁盘IO次数越多查找越耗时。因此这里取每个结点可拥有孩子的下限，即$\lceil m/2 \rceil$。</p>
+<table>
+<thead>
+<tr>
+<th>层号</th>
+<th>每层结点数</th>
+<th>每层关键字数</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>2</td>
+<td>2</td>
+<td>$2*(\lceil m/2 \rceil - 1)$</td>
+</tr>
+<tr>
+<td>3</td>
+<td>$2* \lceil{m/2}\rceil$</td>
+<td>$2 * \lceil{m/2}\rceil * ( \lceil{m/2}\rceil - 1)$</td>
+</tr>
+<tr>
+<td>4</td>
+<td>$2* \lceil{m/2}\rceil ^2$</td>
+<td>$2 * \lceil{m/2}\rceil ^ 2 * ( \lceil{m/2}\rceil - 1 )$</td>
+</tr>
+<tr>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+</tr>
+<tr>
+<td>k</td>
+<td>$2*\lceil{m/2}\rceil^{k-2}$</td>
+<td>$2 * \lceil{m/2}\rceil ^ {k-2} * ( \lceil{m/2}\rceil - 1 )$</td>
+</tr>
+</tbody></table>
+<p>总关键字数量：$1+2*[\lceil m/2 \rceil^{k-1}-1]$。</p>
+<p>可推导层号k：$1+2*[\lceil m/2 \rceil^{k-1}-1] \geq N$，$k \geq log_{\lceil m/2 \rceil} \frac{N+1}{2} + 1 $。</p>
+<p>因此最坏时间复杂度：$O(log_{m} N)$</p>
+<h4 id="B树如何插入关键字或者说记录？"><a href="#B树如何插入关键字或者说记录？" class="headerlink" title="B树如何插入关键字或者说记录？"></a>B树如何插入关键字或者说记录？</h4><p>B树的插入操作是指在树中插入一条新记录，即<code>（key, value）</code>的键值对。如果B树中已存在需要插入的键值对，则用需要插入的value替换旧的value。若B树不存在这个key，则一定是在叶子结点中进行插入操作。</p>
+<p><strong>B树的插入流程如下：</strong></p>
+<ol>
+<li>根据要插入的key值，对B树执行查找操作，查找到待插入数据的结点。</li>
+<li>判断结点中key的个数是否小于等于$m-1$，若是，则直接插入数据并结束，否则，进行第3步。</li>
+<li>以结点中间的key为中心将结点分裂成左右两部分，然后将这个中间的key插入到父结点中。在父结点中，这个key的左子树指针指向分裂后的左半部分，这个key的右子树指针指向分裂后的右半部分，最后检查父结点中key的个数是否小于等于$m-1$，若是，则结束，否则，继续对父结点进行第3步。</li>
+</ol>
+<p>下面以5阶B树为例，介绍B树的插入操作。在5阶B树中，结点最多有4个key,最少有2个key。</p>
+
+
+
+
+
+
+
+
+<h5 id="性能分析-1"><a href="#性能分析-1" class="headerlink" title="性能分析"></a>性能分析</h5><p>B树插入操作前需要执行一次查找操作，B树的查找操作的时间复杂度为$O(log_{m} N)$。其中m为B树的阶数，N为B树中key的数目。在插入过程，最耗时的情形即为：插入数据后导致根结点发生分裂，<strong>分裂结点的操作是常数级</strong>，分裂操作向上回溯的时间复杂度为$O(k-1)$，k为插入结点所在层号。因此，B树的插入操作的时间复杂度近似于查找操作，即$O(log_{m} N)$。</p>
+<h4 id="B树如何删除关键字或者说记录？"><a href="#B树如何删除关键字或者说记录？" class="headerlink" title="B树如何删除关键字或者说记录？"></a>B树如何删除关键字或者说记录？</h4><p>B树的删除操作是指在树中删除一条记录，即<code>（key, value）</code>的键值对。</p>
+<p><strong>B树的删除流程如下：</strong></p>
+<blockquote>
+<ul>
+<li><p>如果需要删除的key位于叶子结点A：</p>
+<ol>
+<li>直接在结点A中删除该key。</li>
+<li>检查结点A中key个数是否大于等于$\lceil m/2 \rceil - 1$，若是，则结束删除操作，否则，需要分情况处理。<ul>
+<li>若结点A的兄弟结点B中key个数大于$\lceil m/2 \rceil - 1$，则将结点A的父结点C中的key下移到结点A，将结点B中的key上移到结点C。</li>
+<li>若结点A的兄弟结点B中key个数不大于$\lceil m/2 \rceil - 1$，则将结点A的父结点C的key下移到结点A，并把结点A和结点B的key合并成一个新结点。结点C中的key的两个孩子指针变成一个孩子指针，指向新结点。</li>
+</ul>
+</li>
+<li>处理完结点A后，可能导致其父结点C中key数量变化，因此需要检查结点C，操作类似第2步。</li>
+</ol>
+</li>
+<li><p>如果需要删除的key位于非叶子结点A：</p>
+<ol>
+<li>用直接后继key（这里的直接后继key均指后继记录的意思）覆盖要删除的key。</li>
+<li>然后在直接后继key所在的结点B中删除该直接后继key。<strong>注意直接后继key一定位于叶子结点上</strong>，这个过程和二叉搜索树删除结点的方式类似。因此就转换成在叶子节点中删除key，这就可以像前一种情况一样处理。</li>
+</ol>
+</li>
+</ul>
+</blockquote>
+<p>下面以5阶B树为例，介绍B树的删除操作。在5阶B树中，结点最多有4个key,最少有2个key。</p>
+
+
+
+
+
+
+
+
+<h5 id="性能分析-2"><a href="#性能分析-2" class="headerlink" title="性能分析"></a>性能分析</h5><p>B树删除操作前需要执行一次查找操作，B树的查找操作的时间复杂度为$O(log_{m} N)$。其中m为B树的阶数，N为B树中key的数目。在删除过程，最耗时的情形即为：删除数据后导致结点调整，<strong>调整结点的操作是常数级</strong>，调整操作向上回溯的时间复杂度为$O(k-1)$，k为插入结点所在层号。因此，B树的删除操作的时间复杂度近似于查找操作，即$O(log_{m} N)$。</p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>B树是一种平衡多路查找树，核心思想是<strong>通过在一个结点中存储多个key的方式，来降低树的高度，从而减少磁盘IO次数，最终达到提高查找效率的目的</strong>。</p>
+<h4 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h4><ul>
+<li><a href="https://www.cxyxiaowu.com/901.html">心里没点 B 树。。。</a></li>
+<li><a href="https://www.cnblogs.com/nullzx/p/8729425.html">B树和B+树的插入、删除图文详解</a></li>
+<li><a href="https://bbs.huaweicloud.com/blogs/143314">《深入浅出话数据结构》系列之什么是B树、B+树？为什么二叉查找树不行？</a></li>
+<li>《大话数据结构》</li>
+</ul>
+</div><div class="notification is-danger">You need to set <code>install_url</code> to use ShareThis. Please set it in <code>_config.yml</code>.</div></article></div><div class="card"><div class="card-content"><h3 class="menu-label has-text-centered">喜欢这篇文章？打赏一下作者吧</h3><div class="buttons is-centered"><a class="button is-info donate"><span class="icon is-small"><i class="fab fa-alipay"></i></span><span>支付宝</span><span class="qrcode"><img src="/" alt="支付宝"></span></a><a class="button donate" href="/" style="background-color:rgba(255,128,62,.87);border-color:transparent;color:white;" target="_blank" rel="noopener"><span class="icon is-small"><i class="fas fa-coffee"></i></span><span>送我杯咖啡</span></a><a class="button is-danger donate" href="/" target="_blank" rel="noopener"><span class="icon is-small"><i class="fab fa-patreon"></i></span><span>Patreon</span></a><div class="notification is-danger">You forgot to set the <code>business</code> or <code>currency_code</code> for Paypal. Please set it in <code>_config.yml</code>.</div><a class="button is-success donate"><span class="icon is-small"><i class="fab fa-weixin"></i></span><span>微信</span><span class="qrcode"><img src="/" alt="微信"></span></a></div></div></div><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2020/03/18/20200318-B%E5%8A%A0%E6%A0%91/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">20200318-B加树</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2020/03/17/20200317-%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%A0%91/"><span class="level-item">20200317-平衡二叉树</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card"><div class="card-content"><h3 class="title is-5">评论</h3><div class="notification is-danger">You forgot to set the <code>shortname</code> for Disqus. Please set it in <code>_config.yml</code>.</div></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1 is-sticky"><div class="card widget"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="/img/KaoLaTouXiang.jpeg" alt="jiangyf1220"></figure><p class="title is-size-4 is-block line-height-inherit">jiangyf1220</p><p class="is-size-6 is-block">求知若饥，虛心若愚</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>中国 浙江</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives"><p class="title">37</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories"><p class="title">0</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags"><p class="title">2</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/screw-driver" target="_blank" rel="noopener">关注我</a></div><div class="level is-mobile"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/screw-driver"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Dribbble" href="https://dribbble.com"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><!--!--><div class="card widget"><div class="card-content"><div class="menu"><h3 class="menu-label">链接</h3><ul class="menu-list"><li><a class="level is-mobile is-mobile" href="https://hexo.io" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">Hexo</span></span><span class="level-right"><span class="level-item tag">hexo.io</span></span></a></li><li><a class="level is-mobile is-mobile" href="https://bulma.io" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">Bulma</span></span><span class="level-right"><span class="level-item tag">bulma.io</span></span></a></li></ul></div></div></div><div class="column-right-shadow is-hidden-widescreen is-sticky"></div></div><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only order-3 is-sticky"><!--!--><div class="card widget"><div class="card-content"><h3 class="menu-label">最新文章</h3><article class="media"><div class="media-content size-small"><p><time dateTime="2020-08-05T07:02:01.481Z">2020-08-05</time></p><p class="title is-6"><a class="link-muted" href="/2020/08/05/20200124-Hexo%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/">20200124-Hexo搭建个人博客</a></p><p class="is-uppercase"></p></div></article><article class="media"><div class="media-content size-small"><p><time dateTime="2020-06-07T10:28:35.000Z">2020-06-07</time></p><p class="title is-6"><a class="link-muted" href="/2020/06/07/20200607-Lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F/">20200607-Lambda表达式</a></p><p class="is-uppercase"></p></div></article><article class="media"><div class="media-content size-small"><p><time dateTime="2020-05-30T03:53:37.000Z">2020-05-30</time></p><p class="title is-6"><a class="link-muted" href="/2020/05/30/20200530-Java%E6%8E%A5%E5%8F%A3/">20200530-Java接口</a></p><p class="is-uppercase"></p></div></article><article class="media"><div class="media-content size-small"><p><time dateTime="2020-03-21T01:45:24.000Z">2020-03-21</time></p><p class="title is-6"><a class="link-muted" href="/2020/03/21/20200321-%E5%86%B3%E7%AD%96%E6%A0%91/">20200321-决策树</a></p><p class="is-uppercase"></p></div></article><article class="media"><div class="media-content size-small"><p><time dateTime="2020-03-19T08:26:35.000Z">2020-03-19</time></p><p class="title is-6"><a class="link-muted" href="/2020/03/19/20200319-Ubuntu-Server-18-04%E5%AE%89%E8%A3%85Gitea/">20200319-Ubuntu Server 18.04安装Gitea</a></p><p class="is-uppercase"></p></div></article></div></div><div class="card widget"><div class="card-content"><div class="menu"><h3 class="menu-label">归档</h3><ul class="menu-list"><li><a class="level is-mobile is-marginless" href="/archives/2020/08/"><span class="level-start"><span class="level-item">八月 2020</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile is-marginless" href="/archives/2020/06/"><span class="level-start"><span class="level-item">六月 2020</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile is-marginless" href="/archives/2020/05/"><span class="level-start"><span class="level-item">五月 2020</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile is-marginless" href="/archives/2020/03/"><span class="level-start"><span class="level-item">三月 2020</span></span><span class="level-end"><span class="level-item tag">23</span></span></a></li><li><a class="level is-mobile is-marginless" href="/archives/2020/02/"><span class="level-start"><span class="level-item">二月 2020</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li></ul></div></div></div><div class="card widget"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/Java/"><span class="tag">Java</span><span class="tag is-grey-lightest">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/java/"><span class="tag">java</span><span class="tag is-grey-lightest">1</span></a></div></div></div></div></div><div class="card widget"><div class="card-content"><div class="menu"><h3 class="menu-label">订阅更新</h3><form action="https://feedburner.google.com/fb/a/mailverify" method="post" target="popupwindow" onsubmit="window.open(&#039;https://feedburner.google.com/fb/a/mailverify?uri=&#039;,&#039;popupwindow&#039;,&#039;scrollbars=yes,width=550,height=520&#039;);return true"><input type="hidden" value="" name="uri"><input type="hidden" name="loc" value="en_US"><div class="field has-addons"><div class="control has-icons-left is-expanded"><input class="input" name="email" type="email" placeholder="Email"><span class="icon is-small is-left"><i class="fas fa-envelope"></i></span></div><div class="control"><input class="button is-primary" type="submit" value="订阅"></div></div></form></div></div></div><div class="card widget"><div class="card-content"><div class="notification is-danger">You need to set <code>client_id</code> and <code>slot_id</code> to show this AD unit. Please set it in <code>_config.yml</code>.</div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="Hexo" height="28"></a><p class="size-small"><span>&copy; 2020 John Doe</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script>moment.locale("zh-CN");</script><script>var IcarusThemeSettings = {
+            site: {
+                url: 'http://yoursite.com',
+                external_link: {"enable":true,"exclude":[]}
+            },
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>
